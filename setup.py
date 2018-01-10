@@ -3,7 +3,7 @@ setup(
     name="pyneapple",
     version="0.1",
     packages=find_packages(),
-    scripts=['pyneapple.py'],
+    scripts=['scripts/pyneapple'],
 
     # Project uses reStructuredText, so ensure that the docutils get
     # installed or upgraded on the target machine
