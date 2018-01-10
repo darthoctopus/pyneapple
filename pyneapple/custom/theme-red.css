@@ -1,0 +1,357 @@
+/* Direct embedding vs. indirect */
+div#notebook-container {
+  width: 100%;
+  padding-top: 50px;
+  padding-bottom: 100px;
+  padding-left: 50px;
+  padding-right: 50px;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+div#notebook {
+  padding: 0;
+  font-size: 16px;
+}
+div#notebook-container {
+  background: transparent;
+}
+/* Break up long words if we need to */
+div.rendered_html p {
+  word-wrap: break-word;
+}
+/* Turn off paragraph thingies */
+div.rendered_html a.anchor-link {
+  visibility: hidden;
+}
+/* Styling for buttons */
+div.btn.btn-default.output_collapsed {
+  background-color: #ba2e21;
+  background-image: linear-gradient(to bottom, #ba2e21, #8f2319);
+  border-radius: 28px;
+  border-color: transparent;
+  color: #ffffff;
+  padding: 7px 20px 7px 20px;
+  margin-top: 6px;
+}
+div.btn.btn-default.output_collapsed:hover {
+  background: #d03325;
+  background-image: linear-gradient(to bottom, #d03325, #ba2e21);
+}
+div.cell.is-button div.input_area {
+  display: none;
+}
+div.cell-button {
+  text-align: center;
+  background-color: #ba2e21;
+  background-image: linear-gradient(to bottom, #ba2e21, #8f2319);
+  border-radius: 28px;
+  border: 0;
+  color: #ffffff;
+  padding: 7px 20px 7px 20px;
+  margin-left: 5px;
+  margin-top: 6px;
+  width: 100%;
+}
+div.cell-button:hover {
+  background: #d03325;
+  color: #ffffff;
+  background-image: linear-gradient(to bottom, #d03325, #ba2e21);
+}
+@font-face {
+  font-family: 'RobotoSlab';
+  src: url('fonts/RobotoSlab-Regular-webfont.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'RobotoSlab';
+  src: url('fonts/RobotoSlab-Bold-webfont.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'VGA';
+  src: url('fonts/MorePerfectDOSVGA.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GreatVibes';
+  src: url('fonts/GreatVibes-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+@media print {
+  div.input,
+  pre {
+    page-break-inside: avoid;
+  }
+}
+@media print {
+  div.cell.selected {
+    border: none !important;
+  }
+}
+/* Make ansi colors more visible in output */
+div.output span.ansiblack {
+  color: #000;
+}
+div.output span.ansired {
+  color: #a00;
+}
+div.output span.ansigreen {
+  color: #0a0;
+}
+div.output span.ansiyellow {
+  color: #ca0;
+}
+div.output span.ansiblue {
+  color: #00a;
+}
+div.output span.ansimagenta {
+  color: #a0a;
+}
+div.output span.ansicyan {
+  color: #0aa;
+}
+div.output span.ansigray {
+  color: #555;
+}
+div.cell.read-only div.input_area {
+  background-image: url('images/stripe2.png');
+  background-repeat: repeat-y;
+  background-position: right;
+  border-radius: 0;
+  border: 0;
+  padding-right: 20px;
+}
+div.cell.read-only.selected div.rendered_html {
+  background-image: url('images/stripe2.png');
+  background-repeat: repeat-y;
+  background-position: right;
+  padding-right: 20px;
+}
+/* always account for stripe to avoid rewrapping as cursor moves */
+div.cell div.rendered_html {
+  padding-right: 20px;
+}
+/* CodeMirror neat theme */
+.cm-s-ipython span.cm-comment {
+  color: #a86;
+  font-style: italic;
+}
+.cm-s-ipython span.cm-keyword {
+  line-height: 1em;
+  font-weight: bold;
+  color: blue;
+}
+.cm-s-ipython span.cm-string {
+  color: #a22;
+}
+.cm-s-ipython span.cm-builtin {
+  line-height: 1em;
+  font-weight: bold;
+  color: #077;
+}
+.cm-s-ipython span.cm-special {
+  line-height: 1em;
+  font-weight: bold;
+  color: #0aa;
+}
+.cm-s-ipython span.cm-variable {
+  color: black;
+}
+.cm-s-ipython span.cm-number {
+  color: #3a3;
+}
+.cm-s-ipython span.cm-atom {
+  color: #3a3;
+}
+.cm-s-ipython span.cm-meta {
+  color: #555;
+}
+.cm-s-ipython span.cm-link {
+  color: #3a3;
+}
+/* Keyboard shortcut */
+div.rendered_html kbd {
+  color: #222;
+  background-color: #e4e4e4;
+  border: 1px solid #f2f2f2;
+  border-radius: 3px;
+  box-shadow: 0.1em 0.2em 0.3em rgba(0, 0, 0, 0.65);
+  padding: 0.2em 0.4em;
+}
+div.rendered_html span.symbol {
+  font-size: 1.4em;
+  vertical-align: middle;
+}
+div.rendered_html h1 {
+  font-size: 48px;
+  font-weight: normal;
+  border-bottom: solid 1px #222;
+}
+div.rendered_html h2 {
+  font-weight: normal;
+  font-size: 32px;
+}
+div.rendered_html code {
+  /* backticks */
+  background-color: #eefbf3;
+  color: #212a25;
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+  border-radius: 3px;
+}
+div.rendered_html pre {
+  /* Code blocks */
+  background: transparent;
+  border-radius: 0;
+  margin-left: 0;
+  margin-right: 0;
+}
+div.rendered_html pre code {
+  /* code blocks */
+  background-color: #f0d9d7;
+  color: #372321;
+  display: block;
+}
+div.rendered_html p.copyright {
+  font-size: 14px;
+  color: rgba(145, 145, 145, 0.8);
+  text-align: right;
+}
+div#notebook {
+  float: left;
+  margin-right: -40px;
+  width: 100%;
+}
+div#notebook-container {
+  margin-right: 40px;
+  width: auto;
+}
+div.tab-selector {
+  background: rgba(0, 0, 0, 0.1);
+  position: relative;
+  width: 40px;
+  float: right;
+}
+div.tab {
+  width: 30px;
+  height: 100px;
+  background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1));
+  color: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.1));
+  margin-right: 10px;
+  margin-left: 0;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 0 15px 15px 0;
+  box-shadow: 5px 0px 5px rgba(0, 0, 0, 0.5);
+  border-left: 1px solid rgba(0, 0, 0, 0.3);
+}
+div.tab-space {
+  width: 30px;
+  height: 20px;
+  border-left: 1px solid rgba(0, 0, 0, 0.3);
+}
+div.tab-space-bottom {
+  width: 40px;
+  background: linear-gradient(to bottom, #e6e6e6, #fff);
+  height: 50px;
+}
+div.tab.active {
+  background: #fff;
+  border-color: rgba(0, 0, 0, 0.3);
+  border-left: 0;
+}
+div#notebook {
+  background: #fff;
+}
+div.input_prompt {
+  color: #5c5c5c;
+}
+div.output_prompt {
+  color: #999999;
+}
+div.input_area {
+  background-color: #f5eeeb;
+}
+div.output_area {
+  color: #222;
+}
+div.output_area pre {
+  color: #222;
+}
+div.output div.output_stderr {
+  background-color: #fbfbeb;
+}
+div.rendered_html {
+  color: #222;
+}
+div.cell.selected {
+  border-color: #917c78;
+}
+.edit_mode div.cell.selected {
+  border-color: #917c78;
+  box-shadow: 3px 3px 20px 0px rgba(0, 0, 0, 0.65);
+}
+div.unittest {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  border-left: 6px solid #f2df0d;
+  border-radius: 0px;
+  margin-left: -5px;
+  margin-right: -20px;
+  padding: 30px;
+  background-color: #fbf5b6;
+  color: #222;
+}
+div.unittest .unittest-test {
+  padding: 0;
+  margin: 0;
+}
+div.unittest .unittest-success {
+  color: #026c2c;
+}
+div.unittest .unittest-success .unittest-name {
+  color: #222;
+}
+div.unittest .unittest-failure {
+  color: #68062c;
+}
+div.unittest .unittest-header {
+  font-weight: bold;
+}
+div.unittest .unittest-error {
+  color: #68062c;
+}
+div.unittest .unittest-skipped {
+  color: #8f8c6c;
+}
+div.unittest .unittest-skipped .unittest-name {
+  color: #8f8c6c;
+}
+div.unittest .unittest-traceback {
+  color: #222;
+}
+div.unittest .unittest-time {
+  color: #8f8c6c;
+}
+div.unittest div.unittest-separator {
+  height: 1px;
+  background-color: #f2df0d;
+  margin-top: 10px;
+}
+div.rendered_html h1 {
+  box-sizing: border-box;
+  font-family: "GreatVibes";
+  font-size: 70px;
+  line-height: 40px;
+  border-bottom: solid 2px #cc1100;
+}
+div.rendered_html h2 {
+  font-size: 42px;
+  line-height: 24px;
+  font-family: "GreatVibes";
+  border-bottom: solid 1px #cc1100;
+}

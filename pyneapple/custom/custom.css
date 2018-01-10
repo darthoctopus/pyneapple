@@ -1,0 +1,5 @@
+/* Turn off web menubar and header */
+div#menubar-container,
+div#header-container {
+  display: none !important;
+}

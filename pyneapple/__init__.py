@@ -135,7 +135,7 @@ class JupyterWindow(object):
 
         # Everything is ready
         # self.load_uri(local_uri + 'home')
-        print(app.server.port, file)
+        # print(app.server.port, file)
         self.load_uri("http://localhost:{}/notebooks{}?token={}".
                       format(app.server.port, file, app.server.token))
         self.window.set_application(app)
@@ -177,7 +177,6 @@ class JupyterWindow(object):
         dialog.format_secondary_text(
             message2)
         dialog.run()
-        print("ERROR dialog closed")
 
         dialog.destroy()
 
@@ -219,7 +218,7 @@ class JupyterWindow(object):
         self.file = dialog.get_filename()
         dialog.destroy()
 
-    def print(self, *_):
+    def print_dialog(self, *_):
         self.webview.run_javascript("window.print()")
 
     def export(self, widget, *_):
@@ -244,7 +243,7 @@ class JupyterWindow(object):
             try:
                 urllib.request.urlretrieve(uri, dialog.get_filename())
             except IOError as e:
-                self.error("Error Saving Notebook", e)
+                self.error("Error Exporting Notebook", e)
         dialog.destroy()
 
 
@@ -472,7 +471,3 @@ class Pyneapple(Gtk.Application):
     def do_shutdown(self):
         Gtk.Application.do_shutdown(self)
         self.serverprocess.terminate()
-
-if __name__ == '__main__':
-    p = Pyneapple()
-    p.run(sys.argv)
