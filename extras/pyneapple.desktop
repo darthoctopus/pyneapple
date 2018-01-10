@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=pyneapple
-Comment=Interactive literate coding notebook that is not shit!
+Comment=Interactive literate coding notebook in GTK
 Exec=pyneapple %U
 Terminal=false
 Type=Application
