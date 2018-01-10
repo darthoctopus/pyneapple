@@ -460,3 +460,7 @@ class Pyneapple(Gtk.Application):
     def do_shutdown(self):
         Gtk.Application.do_shutdown(self)
         self.serverprocess.terminate()
+
+if __name__ == '__main__':
+    p = Pyneapple()
+    p.run(sys.argv)
