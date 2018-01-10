@@ -398,6 +398,10 @@ class PyneappleServer(object):
         except:
         	"Config directory Exists"
         try:
+        	os.makedirs(os.path.expanduser(config('TmpDir')))
+        except:
+        	"Temp directory Exists"
+        try:
             os.symlink(customres, os.environ['JUPYTER_CONFIG_DIR'] + '/custom')
         except IOError as e:
             print(e)
@@ -433,11 +437,12 @@ class Pyneapple(Gtk.Application):
             self.new_ipynb()
 
     def new_ipynb(self):
-        while os.path.exists(os.path.join(get_home_dir(),
+        while os.path.exists(os.path.join(os.path.expanduser(config('TmpDir')),
                                           "Untitled %d.ipynb" % self.highest_untitled)):
             self.highest_untitled += 1
 
-        fn = os.path.join(get_home_dir(), "Untitled %d.ipynb" % self.highest_untitled)
+        fn = os.path.join(os.path.expanduser(config('TmpDir')),
+        									 "Untitled %d.ipynb" % self.highest_untitled)
 
         with open(fn, "w") as f:
             f.write(NEW)
