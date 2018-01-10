@@ -21,21 +21,37 @@ import sys
 import os
 import time
 import shutil
+import hashlib
+
+import urllib.request
+from notebook.notebookapp import NotebookApp
+from multiprocessing import Process
 
 import gi
+# Pylint doesn't like this.
 gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
 from gi.repository import Gio, Gtk, WebKit2
-from os.path import abspath, basename, dirname, join
 
-from notebook.notebookapp import NotebookApp
-from multiprocessing import Process
-import urllib.request
+builder = Gtk.Builder()
+go = builder.get_object
+get_name = Gtk.Buildable.get_name
+
+def md5(string):
+    return hashlib.md5(string.encode('utf-8')).hexdigest()
 
 def get_home_dir():
     homedir = os.path.expanduser('~')
     homedir = os.path.realpath(homedir)
     return homedir
+
+def dialog_filter(dialog, name="Jupyter Notebook", ext="*.ipynb",
+                  mime="application/x-ipynb+json"):
+    filter_ipynb = Gtk.FileFilter()
+    filter_ipynb.set_name(name)
+    filter_ipynb.add_pattern(ext)
+    filter_ipynb.add_mime_type(mime)
+    dialog.add_filter(filter_ipynb)
 
 NEW = """{
  "cells": [
@@ -73,7 +89,7 @@ NEW = """{
 DEFAULT_THEME = 'theme-light'
 #todo: add settings
 
-WHERE_AM_I = abspath(dirname(__file__))
+WHERE_AM_I = os.path.abspath(os.path.dirname(__file__))
 
 CALLBACK_PREFIX = "$$$$"
 CALLBACK_SEPARATOR = "|"
@@ -92,26 +108,26 @@ class JupyterWindow(object):
         """
 
         # Build GUI from Glade file
-        self.builder = Gtk.Builder()
-        self.builder.add_from_file(join(WHERE_AM_I, 'pyneapple.ui'))
+        builder.add_from_file(os.path.join(WHERE_AM_I, 'pyneapple.ui'))
 
         self.app = app
         self.file = file
         self.ready = False
-        self.dialog_flags = flags=(Gtk.DialogFlags.MODAL|Gtk.DialogFlags.DESTROY_WITH_PARENT|Gtk.DialogFlags.USE_HEADER_BAR)
+        self.dialog_flags = (Gtk.DialogFlags.MODAL|
+                             Gtk.DialogFlags.DESTROY_WITH_PARENT|
+                             Gtk.DialogFlags.USE_HEADER_BAR)
 
         # Get objects
-        go = self.builder.get_object
         self.window = go('window')
-        self.scrolled = go('scrolled')
         self.headerbar = go('headerbar')
 
         # Create WebView
         self.webview = WebKit2.WebView()
-        self.scrolled.add_with_viewport(self.webview)
+        scrolled = go('scrolled')
+        scrolled.add_with_viewport(self.webview)
 
         # Connect signals
-        self.builder.connect_signals(self)
+        builder.connect_signals(self)
         self.webview.connect('load-changed', self.load_changed_cb)
         self.webview.connect('notify::title', self.titlechanged)
         self.webview.connect('context-menu', lambda s, w, e, u: True)
@@ -120,12 +136,13 @@ class JupyterWindow(object):
         # Everything is ready
         # self.load_uri(local_uri + 'home')
         print(app.server.port, file)
-        self.load_uri("http://localhost:{}/notebooks{}".format(app.server.port, file))
+        self.load_uri("http://localhost:{}/notebooks{}?token={}".
+                      format(app.server.port, file, app.server.token))
         self.window.set_application(app)
         self.window.show()
         self.window.show_all()
 
-    def close(self, *args):
+    def close(self, *_):
         if not self.ready:
             return False
 
@@ -147,15 +164,16 @@ class JupyterWindow(object):
                 require('base/js/events').on("notebook_saved.Notebook", success);
                 }"""
         self.webview.run_javascript(ss)
-        self.webview.run_javascript(self.jupyter_click_code('save_checkpoint'))
+        self.jupyter_click_run('save_checkpoint')
         return True
 
-    def quit(self, *args):
+    def quit(self, *_):
         self.app.quit()
 
     def error(self, message, message2):
         dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
-            Gtk.ButtonsType.CANCEL, message, flags=self.dialog_flags)
+                                   Gtk.ButtonsType.CANCEL,
+                                   message, flags=self.dialog_flags)
         dialog.format_secondary_text(
             message2)
         dialog.run()
@@ -163,34 +181,37 @@ class JupyterWindow(object):
 
         dialog.destroy()
 
-    def open(self, widget, *args):
+    def open(self, *_):
         dialog = Gtk.FileChooserDialog("Please choose a file", self.window,
-            Gtk.FileChooserAction.OPEN,
-            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-             Gtk.STOCK_OPEN, Gtk.ResponseType.OK), flags=self.dialog_flags)
-        self.ipynb_filter(dialog)
-        
+                                       Gtk.FileChooserAction.OPEN,
+                                       (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                        Gtk.STOCK_OPEN, Gtk.ResponseType.OK),
+                                       flags=self.dialog_flags)
+        dialog_filter(dialog)
+
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             self.app.open_filename(dialog.get_filename())
 
         dialog.destroy()
 
-    def save_as(self, widget, *args):
-        self.webview.run_javascript(self.jupyter_click_code('save_checkpoint'))
+    def save_as(self, *_):
+        self.jupyter_click_run('save_checkpoint')
         dialog = Gtk.FileChooserDialog("Please choose a location to save the file", self.window,
-            Gtk.FileChooserAction.SAVE,
-            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-             Gtk.STOCK_SAVE, Gtk.ResponseType.OK), flags=self.dialog_flags)
-        self.ipynb_filter(dialog)
-        
+                                       Gtk.FileChooserAction.SAVE,
+                                       (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                        Gtk.STOCK_SAVE, Gtk.ResponseType.OK),
+                                       flags=self.dialog_flags)
+        dialog_filter(dialog)
+
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             try:
                 shutil.copy(self.file, dialog.get_filename())
                 self.ready = False
-                self.load_uri("http://localhost:{}/notebooks{}".format(self.app.server.port, dialog.get_filename()))
-            except e:
+                self.load_uri("http://localhost:{}/notebooks{}"
+                              .format(self.app.server.port, dialog.get_filename()))
+            except IOError as e:
                 self.error("Error Saving Notebook", e)
 
         self.app.windows[dialog.get_filename()] = self.app.windows[self.file]
@@ -198,40 +219,31 @@ class JupyterWindow(object):
         self.file = dialog.get_filename()
         dialog.destroy()
 
-    def print(self, *args):
+    def print(self, *_):
         self.webview.run_javascript("window.print()")
 
-    def ipynb_filter(self, dialog):
-        filter_ipynb = Gtk.FileFilter()
-        filter_ipynb.set_name("Jupyter Notebooks")
-        filter_ipynb.add_pattern("*.ipynb")
-        filter_ipynb.add_mime_type("application/x-ipynb+json")
-        dialog.add_filter(filter_ipynb)
-
-    def export(self, widget, *args):
-        format = Gtk.Buildable.get_name(widget)
-        uri = "http://localhost:{}/nbconvert/{}{}".format(self.app.server.port, format, self.file)
+    def export(self, widget, *_):
+        fmt = get_name(widget)
+        uri = "http://localhost:{}/nbconvert/{}{}".format(self.app.server.port, fmt, self.file)
 
         extension = {'python':'*.py', 'markdown':'*.md', 'html':'*.html'}
         name = widget.get_label()
         mime = {'python':'text/python', 'markdown':'text/markdown', 'html':'text/html'}
 
-        self.webview.run_javascript(self.jupyter_click_code('save_checkpoint'))
+        self.jupyter_click_run('save_checkpoint')
         dialog = Gtk.FileChooserDialog("Please choose a location to export the file", self.window,
-            Gtk.FileChooserAction.SAVE,
-            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-             Gtk.STOCK_SAVE, Gtk.ResponseType.OK), flags=self.dialog_flags)
-        filter = Gtk.FileFilter()
-        filter.set_name(name + "({})".format(extension[format]))
-        filter.add_pattern(extension[format])
-        filter.add_mime_type(mime[format])
-        dialog.add_filter(filter)
-        
+                                       Gtk.FileChooserAction.SAVE,
+                                       (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                        Gtk.STOCK_SAVE, Gtk.ResponseType.OK),
+                                       flags=self.dialog_flags)
+        dialog_filter(dialog, name=(name + " ({})".format(extension[fmt])),
+                      ext=extension[fmt], mime=mime[fmt])
+
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             try:
                 urllib.request.urlretrieve(uri, dialog.get_filename())
-            except e:
+            except IOError as e:
                 self.error("Error Saving Notebook", e)
         dialog.destroy()
 
@@ -242,10 +254,10 @@ class JupyterWindow(object):
         """
         ev = str(event)
         if 'WEBKIT_LOAD_COMMITTED' in ev:
-            self.headerbar.set_title("Pyneapple: "+ basename(self.file))
+            self.headerbar.set_title("Pyneapple: "+ os.path.basename(self.file))
             self.headerbar.set_subtitle(self.webview.get_uri())
         elif 'WEBKIT_LOAD_FINISHED' in ev:
-            self.set_theme(self.builder.get_object(DEFAULT_THEME))
+            self.set_theme(go(DEFAULT_THEME))
             self.ready = True
 
     def load_uri(self, uri):
@@ -255,8 +267,8 @@ class JupyterWindow(object):
         self.webview.load_uri(uri)
         return
 
-    def zoom(self, widget, *args):
-        name = Gtk.Buildable.get_name(widget)
+    def zoom(self, widget, *_):
+        name = get_name(widget)
         #print("self.webview.{}()".format(name))
         if name == "zoom_in":
             self.webview.set_zoom_level(self.webview.get_zoom_level() * 1.1)
@@ -265,12 +277,12 @@ class JupyterWindow(object):
         else:
             self.webview.set_zoom_level(1)
 
-    def toggle_csd(self, *args):
+    def toggle_csd(self, *_):
         self.headerbar.set_visible(not self.headerbar.get_visible())
 
 
-    def set_theme(self, widget, user_data=None):
-        theme = "/custom/{}.css".format(Gtk.Buildable.get_name(widget))
+    def set_theme(self, widget, *_):
+        theme = "/custom/{}.css".format(get_name(widget))
         if theme[-8:-4] == "none":
             theme = "#"
 
@@ -278,27 +290,26 @@ class JupyterWindow(object):
             require('custom/custom').set_theme(global_start_theme);""".format(theme))
 
 
-    def jupyter_click(self, widget, user_data=None):
+    def jupyter_click(self, widget, *_):
         """
         Emulate a click on the Jupyter menu
         if suffix _toolbar is present, we strip it first
         """
 
-        id = Gtk.Buildable.get_name(widget)
-        if id[-len('_toolbar'):] == '_toolbar':
-            id = id[:-len('_toolbar')]
-        self.webview.run_javascript(self.jupyter_click_code(id))
-        
+        widget_id = get_name(widget)
+        if widget_id[-len('_toolbar'):] == '_toolbar':
+            widget_id = widget_id[:-len('_toolbar')]
+        self.jupyter_click_run(widget_id)
 
-    def jupyter_click_code(self, name):
-        return "Jupyter.menubar.element.find('#%s').click(); true" % name
+    def jupyter_click_run(self, name):
+        self.webview.run_javascript("Jupyter.menubar.element.find('#%s').click(); true" % name)
 
-    def change_kernel(self, widget, *args):
-        id = Gtk.Buildable.get_name(widget)
-        self.webview.run_javascript("Jupyter.notebook.kernel_selector.set_kernel('%s');" % id)
+    def change_kernel(self, widget, *_):
+        kernel = get_name(widget)
+        self.webview.run_javascript("Jupyter.notebook.kernel_selector.set_kernel('%s');" % kernel)
 
-    def new(self, *args):
-        self.app.new()
+    def new(self, *_):
+        self.app.new_ipynb()
 
 
     # def test_return(self, widget, user_data=None):
@@ -310,10 +321,10 @@ class JupyterWindow(object):
 
     # Unfortunately, JScore objects are not introspectable and therefore
     # are unsupported with GIO in Python.
-    # Here I port Nathan Whitehead's implementation of 
+    # Here I port Nathan Whitehead's implementation of
     # a callback scheme using the page title as a message-passing interface.
 
-    def titlechanged(self, webview, *args):
+    def titlechanged(self, *_):
         s = self.webview.get_title()
         if s.startswith(CALLBACK_PREFIX):
             num, contents = s[len(CALLBACK_PREFIX):].split(CALLBACK_SEPARATOR)
@@ -323,7 +334,7 @@ class JupyterWindow(object):
                 spec = eval(contents)
 
                 # We dynamically populate the menu of kernels
-                kernellist = self.builder.get_object('change_kernel').get_submenu()
+                kernellist = go('change_kernel').get_submenu()
                 for q in kernellist.get_children():
                     kernellist.remove(q)
                 for q in spec:
@@ -344,13 +355,15 @@ class JupyterWindow(object):
             elif num == -1:
                 # kernel busy indicator: "true" if busy and "false" otherwise
                 busy = True if contents == "true" else False
-                self.builder.get_object('interrupt_kernel_toolbar').set_sensitive(busy)
-                self.headerbar.set_title("Pyneapple: %s%s" %  (basename(self.file), " (busy)" if busy else ""))
+                go('interrupt_kernel_toolbar').set_sensitive(busy)
+                self.headerbar.set_title("Pyneapple: %s%s"
+                                         %  (os.path.basename(self.file),
+                                             " (busy)" if busy else ""))
             else:
                 # Maybe Nathan coded other callbacks idk
                 print(s)
 
-    def clear_output(self, widget, user_data=None):
+    def clear_output(self, *_):
         """
         Clear output for selected cell
         """
@@ -358,15 +371,16 @@ class JupyterWindow(object):
 
 
 class PyneappleServer(object):
-    """ 
+    """
     Adapted from N Whitehead
     """
 
     def __init__(self):
         self.port = int("4" + str(time.time()).split('.')[-1][:4])
+        self.token = md5(str(time.time()))
 
     def run(self):
-        """ 
+        """
         Need a way of getting config
         """
 
@@ -387,16 +401,15 @@ class PyneappleServer(object):
         customres = os.path.dirname(__file__) + '/custom'
         try:
             os.symlink(customres, os.environ['JUPYTER_CONFIG_DIR'] + '/custom')
-        except:
-            pass
-        
-        self.app = NotebookApp()
-        self.app.open_browser = False
-        self.app.token = ''
+        except IOError as e:
+            print(e)
 
-        """ Method that runs forever """
-        self.app.initialize()
-        self.app.start()
+        app = NotebookApp()
+        app.open_browser = False
+        app.token = self.token
+
+        app.initialize()
+        app.start()
 
 class Pyneapple(Gtk.Application):
     def __init__(self):
@@ -404,25 +417,26 @@ class Pyneapple(Gtk.Application):
                          flags=Gio.ApplicationFlags.HANDLES_OPEN)
         self.windows = {}
         self.highest_untitled = 0
+        self.server = PyneappleServer()
+        self.serverprocess = Process(target=self.server.run)
 
     def do_startup(self):
         Gtk.Application.do_startup(self)
-        self.argv = sys.argv
-        self.server = PyneappleServer()
-        self.serverprocess = Process(target=self.server.run)
+        argv = sys.argv
         self.serverprocess.start()
-        sys.argv = self.argv
+        sys.argv = argv
 
         #hack
         time.sleep(1)
 
     def do_activate(self):
         Gtk.Application.do_activate(self)
-        if len(self.windows) == 0:
-            self.new()
+        if not self.windows:
+            self.new_ipynb()
 
-    def new(self):
-        while os.path.exists(os.path.join(get_home_dir(), "Untitled %d.ipynb" % self.highest_untitled)):
+    def new_ipynb(self):
+        while os.path.exists(os.path.join(get_home_dir(),
+                                          "Untitled %d.ipynb" % self.highest_untitled)):
             self.highest_untitled += 1
 
         fn = os.path.join(get_home_dir(), "Untitled %d.ipynb" % self.highest_untitled)
@@ -439,11 +453,11 @@ class Pyneapple(Gtk.Application):
         else:
             self.windows[filename].window.present()
 
-    def do_open(self, files, *args):
+    def do_open(self, files, *_):
         for file in files:
-            p = file.get_path()
-            if p[-6:] == ".ipynb":
-                self.open_filename(p)
+            filepath = file.get_path()
+            if filepath[-6:] == ".ipynb":
+                self.open_filename(filepath)
 
     def do_shutdown(self):
         Gtk.Application.do_shutdown(self)
