@@ -33,17 +33,14 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('WebKit2', '4.0')
 from gi.repository import Gio, Gtk, WebKit2
 
+from .config import config
+
 builder = Gtk.Builder()
 go = builder.get_object
 get_name = Gtk.Buildable.get_name
 
 def md5(string):
     return hashlib.md5(string.encode('utf-8')).hexdigest()
-
-def get_home_dir():
-    homedir = os.path.expanduser('~')
-    homedir = os.path.realpath(homedir)
-    return homedir
 
 def dialog_filter(dialog, name="Jupyter Notebook", ext="*.ipynb",
                   mime="application/x-ipynb+json"):
@@ -86,7 +83,6 @@ NEW = """{
  "nbformat_minor": 1
 }"""
 
-DEFAULT_THEME = 'theme-light'
 #todo: add settings
 
 WHERE_AM_I = os.path.abspath(os.path.dirname(__file__))
@@ -256,7 +252,7 @@ class JupyterWindow(object):
             self.headerbar.set_title("Pyneapple: "+ os.path.basename(self.file))
             self.headerbar.set_subtitle(self.webview.get_uri())
         elif 'WEBKIT_LOAD_FINISHED' in ev:
-            self.set_theme(go(DEFAULT_THEME))
+            self.set_theme(go(config('theme')))
             self.ready = True
 
     def load_uri(self, uri):
@@ -389,25 +385,18 @@ class PyneappleServer(object):
         self.token = md5(str(time.time()))
 
     def run(self):
-        """
-        Need a way of getting config
-        """
-
-        def get_config_dir():
-            homedir = get_home_dir()
-            return os.path.join(homedir, '.pineapple', 'Jupyter')
-
-        def get_data_dir():
-            homedir = get_home_dir()
-            return os.path.join(homedir, '.Pineapple', 'Jupyter')
 
         # Always serve from root
         sys.argv = [sys.executable, '--port={}'.format(self.port), '/']
-        os.environ['JUPYTER_CONFIG_DIR'] = get_config_dir()
-        os.environ['JUPYTER_DATA_DIR'] = get_data_dir()
+        os.environ['JUPYTER_CONFIG_DIR'] = os.path.expanduser(config('ConfigDir'))
+        os.environ['JUPYTER_DATA_DIR'] = os.path.expanduser(config('DataDir'))
 
         # Symlink custom resources
         customres = os.path.dirname(__file__) + '/custom'
+        try:
+        	os.makedirs(os.environ['JUPYTER_CONFIG_DIR'])
+        except:
+        	"Config directory Exists"
         try:
             os.symlink(customres, os.environ['JUPYTER_CONFIG_DIR'] + '/custom')
         except IOError as e:
