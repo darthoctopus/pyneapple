@@ -7,7 +7,7 @@ setup(
 
     # Project uses reStructuredText, so ensure that the docutils get
     # installed or upgraded on the target machine
-    install_requires=['notebook>=5.1'],
+    install_requires=['notebook>=5.1', 'pgi'],
 
     package_data={
         # If any package contains *.txt or *.rst files, include them:
