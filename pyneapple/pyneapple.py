@@ -280,16 +280,6 @@ class JupyterWindow(object):
     def toggle_csd(self, *_):
         self.headerbar.set_visible(not self.headerbar.get_visible())
 
-
-    def set_theme(self, widget, *_):
-        theme = "/custom/{}.css".format(get_name(widget))
-        if theme[-8:-4] == "none":
-            theme = "#"
-
-        self.webview.run_javascript("""global_start_theme="{}";
-            require('custom/custom').set_theme(global_start_theme);""".format(theme))
-
-
     def jupyter_click(self, widget, *_):
         """
         Emulate a click on the Jupyter menu
@@ -303,6 +293,26 @@ class JupyterWindow(object):
 
     def jupyter_click_run(self, name):
         self.webview.run_javascript("Jupyter.menubar.element.find('#%s').click(); true" % name)
+
+    # Some of Nathan's utility functions are implemented here.
+
+    def button(self, widget, *_):
+        button_type = "'%s'" @ get_name(widget)[len('button_'):]
+        if button_type == "'unset'"
+            button_type = 'false'
+
+        self.webview.run_javascript("require('custom/custom').setSelectionButton(%s);" % button_type)
+
+    def toggle_readonly(self, *_):
+        self.webview.run_javascript("require('custom/custom').toggleReadOnly();")
+
+    def set_theme(self, widget, *_):
+        theme = "/custom/{}.css".format(get_name(widget))
+        if theme[-8:-4] == "none":
+            theme = "#"
+
+        self.webview.run_javascript("""global_start_theme="{}";
+            require('custom/custom').set_theme(global_start_theme);""".format(theme))
 
     def change_kernel(self, widget, *_):
         kernel = get_name(widget)
