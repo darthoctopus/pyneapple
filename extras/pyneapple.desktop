@@ -7,3 +7,4 @@ Type=Application
 Icon=pyneapple
 MimeType=application/x-ipynb+json;
 StartupNotify=true
+StartupWMClass=pyneapple

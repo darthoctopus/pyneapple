@@ -1,8 +1,8 @@
 # Pyneapple: Interactive Jupyter Notebooks for GTK
 
-I've been actively using [Pineapple](http://github.com/nwhitehead/pineapple) but its development seems to have stalled and/or been stymied by a bunch of bugs in various projects (which I've duly reported upstream). Since I use it as much as I do, I decided to re-implement things in Python + wxWidgets. This has a couple of advantages:
+I've been actively using [Pineapple](http://github.com/nwhitehead/pineapple) but its development seems to have stalled and/or been stymied by a bunch of bugs in various projects (which I've duly reported upstream). Since I use it as much as I do, I decided to re-implement things in Python instead of wxWidgets. This has a couple of advantages:
 
-- No explicit dependence on daemonising an external server process, which may continue running in the background if the main GUI application fails
+- No explicit dependence on daemonising an external server process, which may otherwise continue running in the background if the main GUI application fails
 - Better integration with Linux desktop environments (at the cost of Mac integration obviously, but I use a global menu and the GUI hasn't changed all than much functionally)
 - Since I'm dogfooding this for my PhD research I can be assured of updates (albeit with a slightly more painful than usual update path)
 
