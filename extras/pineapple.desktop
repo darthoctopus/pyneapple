@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=pyneapple
+Comment=Interactive literate coding notebook that is not shit!
+Exec=pyneapple %U
+Terminal=false
+Type=Application
+Icon=pyneapple
+MimeType=application/x-ipynb+json;
+StartupNotify=true
