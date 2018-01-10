@@ -250,7 +250,7 @@ class JupyterWindow(object):
         ev = str(event)
         if 'WEBKIT_LOAD_COMMITTED' in ev:
             self.headerbar.set_title("Pyneapple: "+ os.path.basename(self.file))
-            self.headerbar.set_subtitle(self.webview.get_uri())
+            self.headerbar.set_subtitle(self.file)
         elif 'WEBKIT_LOAD_FINISHED' in ev:
             self.set_theme(go(config('theme')))
             self.ready = True
