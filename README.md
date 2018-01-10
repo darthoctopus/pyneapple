@@ -35,3 +35,7 @@ As a `Gtk.Application`, `pyneapple` will automatically keep one instance of the 
 Configuration (e.g. default theme, location of Jupyter config directories) can be changed by creating either `~/.pyneapplerc`, `~/.config/pyneapple/pyneapplerc` or `pyneapplerc` in the working directory. Look at `defaults.cfg` for default values.
 
 ![Screenshot](ss.png)
+
+## Extras
+
+I've included a desktop file in `extras`, to be placed in the application directory (e.g. `/usr/share/applications`) after installation. It references an icon that doesn't yet exist; I've been personally using the Pineapple icon but may get around to designing a new one shortly (time and medical conditions permitting).
