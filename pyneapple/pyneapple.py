@@ -297,8 +297,8 @@ class JupyterWindow(object):
     # Some of Nathan's utility functions are implemented here.
 
     def button(self, widget, *_):
-        button_type = "'%s'" @ get_name(widget)[len('button_'):]
-        if button_type == "'unset'"
+        button_type = "'%s'" % get_name(widget)[len('button_'):]
+        if button_type == "'unset'":
             button_type = 'false'
 
         self.webview.run_javascript("require('custom/custom').setSelectionButton(%s);" % button_type)
