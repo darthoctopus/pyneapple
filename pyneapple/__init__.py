@@ -483,7 +483,7 @@ class PyneappleServer(object):
 
 class Pyneapple(Gtk.Application):
     def __init__(self):
-        super().__init__(application_id="org.pyneapple.test",
+        super().__init__(application_id="org.pyneapple",
                          flags=Gio.ApplicationFlags.HANDLES_OPEN)
         self.windows = {}
         self.highest_untitled = 0
@@ -537,7 +537,3 @@ class Pyneapple(Gtk.Application):
     def do_shutdown(self):
         Gtk.Application.do_shutdown(self)
         self.serverprocess.terminate()
-
-if __name__ == '__main__':
-    p = Pyneapple()
-    p.run(sys.argv)
