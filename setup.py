@@ -8,7 +8,7 @@ setup(
     install_requires=['notebook>=5.1'],
 
     package_data={
-        'pyneapple': ['*.cfg', '*.ui', 'custom/*', 'custom/*/*'],
+        'pyneapple': ['data/*', 'custom/*', 'custom/*/*'],
     },
 
     data_files = [

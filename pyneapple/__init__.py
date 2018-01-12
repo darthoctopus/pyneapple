@@ -24,23 +24,18 @@ import shutil
 import hashlib
 
 import urllib.request
-from notebook.notebookapp import NotebookApp
 from multiprocessing import Process
-
-import gi
-# Pylint doesn't like this.
-gi.require_version('Gtk', '3.0')
-gi.require_version('WebKit2', '4.0')
-from gi.repository import Gio, Gtk, WebKit2, GLib
+from notebook.notebookapp import NotebookApp
 
 from .config import config
+from .platform import Gtk, GLib, Gio, WebView, platformat, SYSTEM
 
 builder = Gtk.Builder()
 go = builder.get_object
 get_name = Gtk.Buildable.get_name
 dialog_flags = (Gtk.DialogFlags.MODAL|
-                     Gtk.DialogFlags.DESTROY_WITH_PARENT|
-                     Gtk.DialogFlags.USE_HEADER_BAR)
+                Gtk.DialogFlags.DESTROY_WITH_PARENT|
+                Gtk.DialogFlags.USE_HEADER_BAR)
 
 def md5(string):
     return hashlib.md5(string.encode('utf-8')).hexdigest()
@@ -118,7 +113,7 @@ class JupyterWindow(object):
         """
 
         # Build GUI from Glade file
-        builder.add_from_file(os.path.join(WHERE_AM_I, 'pyneapple.ui'))
+        builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'pyneapple.ui'))
 
         self.app = app
         self.file = file
@@ -129,13 +124,17 @@ class JupyterWindow(object):
         self.headerbar = go('headerbar')
 
         # Create WebView
-        self.webview = WebKit2.WebView()
+        self.webview = WebView()
         scrolled = go('scrolled')
         scrolled.add_with_viewport(self.webview)
 
         # Connect signals
         builder.connect_signals(self)
-        self.webview.connect('load-changed', self.load_changed_cb)
+
+        if SYSTEM == "Windows":
+            self.webview.connect('notify::load-status', self.load_status_cb)
+        else:
+            self.webview.connect('load_changed', self.load_changed_cb)
         self.webview.connect('notify::title', self.titlechanged)
         self.webview.connect('context-menu', lambda s, w, e, u: True)
         self.window.connect('delete-event', self.close)
@@ -144,7 +143,7 @@ class JupyterWindow(object):
         # self.load_uri(local_uri + 'home')
         # print(app.server.port, file)
         self.load_uri("http://localhost:{}/notebooks{}?token={}".
-                      format(app.server.port, file, app.server.token))
+                      format(app.server.port, platformat(file), app.server.token))
         self.window.set_application(app)
         self.window.show()
         self.window.show_all()
@@ -227,7 +226,7 @@ class JupyterWindow(object):
 
     def reset(self, *_):
         self.load_uri("http://localhost:{}/notebooks{}".
-                      format(self.app.server.port, self.file))
+                      format(self.app.server.port, platformat(self.file)))
 
     def save_as(self, *_):
         self.jupyter_click_run('save_checkpoint')
@@ -244,7 +243,7 @@ class JupyterWindow(object):
                 shutil.copy(self.file, dialog.get_filename())
                 self.ready = False
                 self.load_uri("http://localhost:{}/notebooks{}"
-                              .format(self.app.server.port, dialog.get_filename()))
+                              .format(self.app.server.port, platformat(dialog.get_filename())))
             except IOError as e:
                 self.error("Error Saving Notebook", e)
 
@@ -258,7 +257,8 @@ class JupyterWindow(object):
 
     def export(self, __, f):
         fmt = _(f)
-        uri = "http://localhost:{}/nbconvert/{}{}".format(self.app.server.port, fmt, self.file)
+        uri = "http://localhost:{}/nbconvert/{}{}".format(self.app.server.port,
+                                                          fmt, platformat(self.file))
 
         extension = {'python':'*.py', 'markdown':'*.md', 'html':'*.html'}
         name = {'python': 'Python', 'markdown': 'Markdown', 'html': 'HTML'}[fmt]
@@ -283,13 +283,19 @@ class JupyterWindow(object):
 
 
     def load_changed_cb(self, webview, event, user_data=None):
-        """
-        Callback for when the load operation in webview changes.
-        """
+        # For WebKit2
         ev = str(event)
+        self.load_event(ev)
+
+    def load_status_cb(self, webview, *_):
+        # For WebKit
+        ev = str(webview.props.load_status)
+        self.load_event(ev)
+
+    def load_event(self, ev):
         if 'WEBKIT_LOAD_COMMITTED' in ev:
             self.headerbar.set_title("Pyneapple: "+ os.path.basename(self.file))
-            self.headerbar.set_subtitle(self.file)
+            self.headerbar.set_subtitle(os.path.normpath(self.file))
         elif 'WEBKIT_LOAD_FINISHED' in ev:
             self.set_theme(config('theme'))
             self.ready = True
@@ -301,8 +307,8 @@ class JupyterWindow(object):
         self.webview.load_uri(uri)
         return
 
-    def zoom(self, __, next):
-        name = _(next)
+    def zoom(self, __, level):
+        name = _(level)
         #print("self.webview.{}()".format(name))
         if name == "zoom_in":
             self.webview.set_zoom_level(self.webview.get_zoom_level() * 1.1)
@@ -340,7 +346,8 @@ class JupyterWindow(object):
         if button_type == "'unset'":
             button_type = 'false'
 
-        self.webview.run_javascript("require('custom/custom').setSelectionButton(%s);" % button_type)
+        self.webview.run_javascript("require('custom/custom').setSelectionButton(%s);" \
+                                    % button_type)
 
     def toggle_readonly(self, *_):
         self.webview.run_javascript("require('custom/custom').toggleReadOnly();")
@@ -380,7 +387,7 @@ class JupyterWindow(object):
 
     def titlechanged(self, *__):
         s = self.webview.get_title()
-        if s.startswith(CALLBACK_PREFIX):
+        if s is not None and s.startswith(CALLBACK_PREFIX):
             num, contents = s[len(CALLBACK_PREFIX):].split(CALLBACK_SEPARATOR)
             num = int(num)
             if num == -3:
@@ -443,13 +450,17 @@ class PyneappleServer(object):
         try:
             # really only important for first run
             os.makedirs(os.environ['JUPYTER_CONFIG_DIR'])
+        except:
+            print("Config directory Exists")
+
+        try:
             shutil.copytree(customres, os.environ['JUPYTER_CONFIG_DIR'] + '/custom')
         except:
-            "Config directory Exists"
+            print("Custom Resources Exist")
         try:
             os.makedirs(os.path.expanduser(config('TmpDir')))
         except:
-            "Temp directory Exists"
+            print("Temp directory Exists")
 
         app = NotebookApp()
         app.open_browser = False
@@ -476,7 +487,7 @@ class Pyneapple(Gtk.Application):
         #hack
         time.sleep(1)
 
-        builder.add_from_file(os.path.join(WHERE_AM_I, 'menu.ui'))
+        builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'menu.ui'))
         self.set_menubar(go("menubar"))
 
     def do_activate(self):
@@ -490,7 +501,7 @@ class Pyneapple(Gtk.Application):
             self.highest_untitled += 1
 
         fn = os.path.join(os.path.expanduser(config('TmpDir')),
-                                             "Untitled %d.ipynb" % self.highest_untitled)
+                          "Untitled %d.ipynb" % self.highest_untitled)
 
         with open(fn, "w") as f:
             f.write(NEW)
