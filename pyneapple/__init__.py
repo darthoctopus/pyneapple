@@ -437,20 +437,19 @@ class PyneappleServer(object):
         os.environ['JUPYTER_CONFIG_DIR'] = os.path.expanduser(config('ConfigDir'))
         os.environ['JUPYTER_DATA_DIR'] = os.path.expanduser(config('DataDir'))
 
-        # Symlink custom resources
+        # copy custom resources
+        # I used to symlink but this breaks when doing pip upgrades
         customres = os.path.dirname(__file__) + '/custom'
         try:
+            # really only important for first run
             os.makedirs(os.environ['JUPYTER_CONFIG_DIR'])
+            shutil.copytree(customres, os.environ['JUPYTER_CONFIG_DIR'] + '/custom')
         except:
             "Config directory Exists"
         try:
             os.makedirs(os.path.expanduser(config('TmpDir')))
         except:
             "Temp directory Exists"
-        try:
-            os.symlink(customres, os.environ['JUPYTER_CONFIG_DIR'] + '/custom')
-        except IOError as e:
-            print(e)
 
         app = NotebookApp()
         app.open_browser = False
