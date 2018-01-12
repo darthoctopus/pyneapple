@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.20.0 -->
+<interface>
+    <requires lib="gtk+" version="3.20"/>
+    <menu id="menubar">
+        <submenu>
+            <attribute name="label">_File</attribute>
+            <section>
+                <item>
+                    <attribute name="label">New</attribute>
+                    <attribute name="action">win.new</attribute>
+                    <attribute name="accel">&lt;Primary&gt;n</attribute>
+                </item>
+                <item>
+                    <attribute name="label">Open</attribute>
+                    <attribute name="action">win.open</attribute>
+                    <attribute name="accel">&lt;Primary&gt;o</attribute>
+                </item>
+                <item>
+                    <attribute name="target">save_checkpoint</attribute>
+                    <attribute name="label">Save</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;s</attribute>
+                </item>
+                <item>
+                    <attribute name="label">Save As</attribute>
+                    <attribute name="action">win.save_as</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;s</attribute>
+                </item>
+            </section>
+            <section>
+                <submenu>
+                    <attribute name="label">Export as</attribute>
+                    <item>
+                        <attribute name="target">python</attribute>
+                        <attribute name="label">Python</attribute>
+                        <attribute name="action">win.export</attribute>
+                    </item>
+                    <item>
+                        <attribute name="target">markdown</attribute>
+                        <attribute name="label">Markdown</attribute>
+                        <attribute name="action">win.export</attribute>
+                    </item>
+                    <item>
+                        <attribute name="target">html</attribute>
+                        <attribute name="label">HTML</attribute>
+                        <attribute name="action">win.export</attribute>
+                    </item>
+                </submenu>
+                <item>
+                    <attribute name="target">trust_notebook</attribute>
+                    <attribute name="label">Trust Notebook</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                </item>
+                <item>
+                    <attribute name="label">Print</attribute>
+                    <attribute name="action">win.print_dialog</attribute>
+                    <attribute name="accel">&lt;Primary&gt;p</attribute>
+                </item>
+            </section>
+            <section>
+                <item>
+                    <attribute name="label">Close</attribute>
+                    <attribute name="action">win.close</attribute>
+                    <attribute name="accel">&lt;Primary&gt;w</attribute>
+                </item>
+            </section>
+            <section>
+                <item>
+                    <attribute name="label">Quit</attribute>
+                    <attribute name="action">win.quit</attribute>
+                    <attribute name="accel">&lt;Primary&gt;q</attribute>
+                </item>
+            </section>
+        </submenu>
+        <submenu>
+            <attribute name="label">_Edit</attribute>
+            <section>
+                <item>
+                    <attribute name="target">cut_cell</attribute>
+                    <attribute name="label">Cut Cell</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;x</attribute>
+                </item>
+                <item>
+                    <attribute name="target">copy_cell</attribute>
+                    <attribute name="label">Copy Cell</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;c</attribute>
+                </item>
+                <item>
+                    <attribute name="target">paste_cell_below</attribute>
+                    <attribute name="label">Paste Cell</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;v</attribute>
+                </item>
+            </section>
+            <section>
+                <item>
+                    <attribute name="target">insert_cell_below</attribute>
+                    <attribute name="label">Insert Cell Below</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                </item>
+            </section>
+            <section>
+                <item>
+                    <attribute name="target">delete_cell</attribute>
+                    <attribute name="label">Delete Cell</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;d</attribute>
+                </item>
+                <item>
+                    <attribute name="target">undelete_cell</attribute>
+                    <attribute name="label">Undelete Cell</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;u</attribute>
+                </item>
+            </section>
+            <section>
+                <item>
+                    <attribute name="target">split_cell</attribute>
+                    <attribute name="label">Split Cell</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;_</attribute>
+                </item>
+                <item>
+                    <attribute name="target">merge_cell_below</attribute>
+                    <attribute name="label">Merge Cell Below</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;m</attribute>
+                </item>
+            </section>
+            <section>
+                <item>
+                    <attribute name="target">move_cell_up</attribute>
+                    <attribute name="label">Move Cell Up</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;Up</attribute>
+                </item>
+                <item>
+                    <attribute name="target">move_cell_down</attribute>
+                    <attribute name="label">Move Cell Down</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;Down</attribute>
+                </item>
+            </section>
+        </submenu>
+        <submenu>
+            <attribute name="label">_Cell</attribute>
+            <section>
+                <item>
+                    <attribute name="target">run_cell</attribute>
+                    <attribute name="label">Run</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;Return</attribute>
+                </item>
+            </section>
+            <section>
+                <item>
+                    <attribute name="target">run_all_cells</attribute>
+                    <attribute name="label">Run All</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;Return</attribute>
+                </item>
+                <item>
+                    <attribute name="target">run_all_cells_above</attribute>
+                    <attribute name="label">Run All Above</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                </item>
+                <item>
+                    <attribute name="target">run_all_cells_below</attribute>
+                    <attribute name="label">Run All Below</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                </item>
+            </section>
+            <section>
+                <submenu>
+                    <attribute name="target">type</attribute>
+                    <attribute name="label">Cell _Type</attribute>
+                    <item>
+                        <attribute name="target">to_code</attribute>
+                        <attribute name="label">Code</attribute>
+                        <attribute name="action">win.jupyter_click_menu</attribute>
+                        <attribute name="accel">&lt;Primary&gt;y</attribute>
+                    </item>
+                    <item>
+                        <attribute name="target">to_markdown</attribute>
+                        <attribute name="label">Markdown</attribute>
+                        <attribute name="action">win.jupyter_click_menu</attribute>
+                        <attribute name="accel">&lt;Primary&gt;m</attribute>
+                    </item>
+                    <item>
+                        <attribute name="target">to_raw</attribute>
+                        <attribute name="label">Raw</attribute>
+                        <attribute name="action">win.jupyter_click_menu</attribute>
+                        <attribute name="accel">&lt;Primary&gt;r</attribute>
+                    </item>
+                </submenu>
+            </section>
+            <section>
+                <item>
+                    <attribute name="label">Toggle Read-Only</attribute>
+                    <attribute name="action">win.toggle_readonly</attribute>
+                </item>
+                <submenu>
+                    <attribute name="label">Show As Button</attribute>
+                    <item>
+                        <attribute name="target">button_run</attribute>
+                        <attribute name="label">Run Button</attribute>
+                        <attribute name="action">win.button</attribute>
+                    </item>
+                    <item>
+                        <attribute name="target">button_submit</attribute>
+                        <attribute name="label">Submit Button</attribute>
+                        <attribute name="action">win.button</attribute>
+                    </item>
+                    <item>
+                        <attribute name="target">button_none</attribute>
+                        <attribute name="label">Invisible</attribute>
+                        <attribute name="action">win.button</attribute>
+                    </item>
+                    <item>
+                        <attribute name="target">button_unset</attribute>
+                        <attribute name="label">None</attribute>
+                        <attribute name="action">win.button</attribute>
+                    </item>
+                </submenu>
+                <item>
+                    <attribute name="label">Clear Output</attribute>
+                    <attribute name="action">win.clear_output</attribute>
+                </item>
+            </section>
+        </submenu>
+        <submenu>
+            <attribute name="label">_Kernel</attribute>
+            <section>
+                <item>
+                    <attribute name="target">int_kernel</attribute>
+                    <attribute name="label">_Interrupt</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;i</attribute>
+                </item>
+                <item>
+                    <attribute name="target">restart_kernel</attribute>
+                    <attribute name="label">Restart</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;0</attribute>
+                </item>
+                <item>
+                    <attribute name="target">reconnect_kernel</attribute>
+                    <attribute name="label">Reconnect</attribute>
+                    <attribute name="action">win.jupyter_click_menu</attribute>
+                </item>
+                <submenu id="change_kernel">
+                    <attribute name="label">Change</attribute>
+                </submenu>
+            </section>
+        </submenu>
+        <submenu>
+            <attribute name="label">_View</attribute>
+            <section>
+                <submenu>
+                    <attribute name="label">Theme</attribute>
+                    <section>
+                        <item>
+                            <attribute name="target">theme-none</attribute>
+                            <attribute name="label">None</attribute>
+                            <attribute name="action">win.set_theme</attribute>
+                        </item>
+                        <item>
+                            <attribute name="target">theme-light</attribute>
+                            <attribute name="label">Light</attribute>
+                            <attribute name="action">win.set_theme</attribute>
+                        </item>
+                        <item>
+                            <attribute name="target">theme-dark</attribute>
+                            <attribute name="label">Dark</attribute>
+                            <attribute name="action">win.set_theme</attribute>
+                        </item>
+                        <item>
+                            <attribute name="target">theme-borlandia</attribute>
+                            <attribute name="label">Borlandia</attribute>
+                            <attribute name="action">win.set_theme</attribute>
+                        </item>
+                        <item>
+                            <attribute name="target">theme-red</attribute>
+                            <attribute name="label">Red</attribute>
+                            <attribute name="action">win.set_theme</attribute>
+                        </item>
+                    </section>
+                </submenu>
+                <item>
+                    <attribute name="target">zoom_in</attribute>
+                    <attribute name="label">Zoom In</attribute>
+                    <attribute name="action">win.zoom</attribute>
+                    <attribute name="accel">&lt;Primary&gt;plus</attribute>
+                </item>
+                <item>
+                    <attribute name="target">zoom_out</attribute>
+                    <attribute name="label">Zoom Out</attribute>
+                    <attribute name="action">win.zoom</attribute>
+                    <attribute name="accel">&lt;Primary&gt;minus</attribute>
+                </item>
+                <item>
+                    <attribute name="target">reset_zoom</attribute>
+                    <attribute name="label">Reset Zoom</attribute>
+                    <attribute name="action">win.zoom</attribute>
+                    <attribute name="accel">&lt;Primary&gt;equal</attribute>
+                </item>
+            </section>
+            <section>
+                <item>
+                    <attribute name="label">Reset</attribute>
+                    <attribute name="action">win.reset</attribute>
+                </item>
+                <item>
+                    <attribute name="label">Toggle Toolbar</attribute>
+                    <attribute name="action">win.toggle_csd</attribute>
+                </item>
+            </section>
+        </submenu>
+        <submenu>
+            <attribute name="label">_Help</attribute>
+            <item>
+                <attribute name="target">keyboard_shortcuts</attribute>
+                <attribute name="label">Keyboard Shortcuts (Jupyter)</attribute>
+                <attribute name="action">win.jupyter_click_menu</attribute>
+            </item>
+        </submenu>
+    </menu>
+</interface>
