@@ -261,7 +261,7 @@ class JupyterWindow(object):
         uri = "http://localhost:{}/nbconvert/{}{}".format(self.app.server.port, fmt, self.file)
 
         extension = {'python':'*.py', 'markdown':'*.md', 'html':'*.html'}
-        name = widget.get_label()
+        name = {'python': 'Python', 'markdown': 'Markdown', 'html': 'HTML'}[fmt]
         mime = {'python':'text/python', 'markdown':'text/markdown', 'html':'text/html'}
 
         self.jupyter_click_run('save_checkpoint')
