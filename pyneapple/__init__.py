@@ -257,7 +257,7 @@ class JupyterWindow(object):
         self.webview.run_javascript("window.print()")
 
     def export(self, __, f):
-        fmt = get_name(f)
+        fmt = _(f)
         uri = "http://localhost:{}/nbconvert/{}{}".format(self.app.server.port, fmt, self.file)
 
         extension = {'python':'*.py', 'markdown':'*.md', 'html':'*.html'}
