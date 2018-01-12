@@ -85,14 +85,14 @@ NEW = """{
 # Why bother with GObject if you're going to
 # totally disregard the python type system
 
-STRING = GLib.VariantType.new('s')
-def _(thing, reverse=False):
-    if isinstance(thing, str):
-        if reverse:
-            return GLib.Variant.new_string(thing)
-        return thing
-    else:
-        return thing.get_string()
+# STRING = GLib.VariantType.new('s')
+# def _(thing, reverse=False):
+#     if isinstance(thing, str):
+#         if reverse:
+#             return GLib.Variant.new_string(thing)
+#         return thing
+#     else:
+#         return thing.get_string()
 
 WHERE_AM_I = os.path.abspath(os.path.dirname(__file__))
 
@@ -113,7 +113,7 @@ class JupyterWindow(object):
         """
 
         # Build GUI from Glade file
-        builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'pyneapple.ui'))
+        builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'pyneapple-old.ui'))
 
         self.app = app
         self.file = file
@@ -151,26 +151,26 @@ class JupyterWindow(object):
         # Did I mention that Gio actions are horrible? let's introduce more
         # boilerplate for the sake of it woo
 
-        for i in ["close", "quit", "open", "save_as", "print_dialog", "reset",
-                  "clear_output", "toggle_csd", "toggle_readonly", "new"]:
-            eval("self.action_hack('{0}', self.{0})".format(i))
+        # for i in ["close", "quit", "open", "save_as", "print_dialog", "reset",
+        #           "clear_output", "toggle_csd", "toggle_readonly", "new"]:
+        #     eval("self.action_hack('{0}', self.{0})".format(i))
 
-        for i in ["jupyter_click_menu", "zoom", "button", "export"]:
-            eval("self.action_hack('{0}', self.{0}, True)".format(i))
+        # for i in ["jupyter_click_menu", "zoom", "button", "export"]:
+        #     eval("self.action_hack('{0}', self.{0}, True)".format(i))
 
-        for i in ["change_kernel", "set_theme"]:
-            eval("self.action_hack('{0}', self.{0}, True, True)".format(i))
+        # for i in ["change_kernel", "set_theme"]:
+        #     eval("self.action_hack('{0}', self.{0}, True, True)".format(i))
 
-    def action_hack(self, name, method, param=False, stateful=False):
-        if param:
-            if stateful:
-                q = Gio.SimpleAction.new_stateful(name, STRING, _('', reverse=True))
-            else:
-                q = Gio.SimpleAction.new(name, STRING)
-        else:
-            q = Gio.SimpleAction.new(name, None)
-        q.connect("activate", method)
-        self.window.add_action(q)
+    # def action_hack(self, name, method, param=False, stateful=False):
+    #     if param:
+    #         if stateful:
+    #             q = Gio.SimpleAction.new_stateful(name, STRING, _('', reverse=True))
+    #         else:
+    #             q = Gio.SimpleAction.new(name, STRING)
+    #     else:
+    #         q = Gio.SimpleAction.new(name, None)
+    #     q.connect("activate", method)
+    #     self.window.add_action(q)
 
     def quit(self, *_):
         self.app.quit()
@@ -255,8 +255,8 @@ class JupyterWindow(object):
     def print_dialog(self, *_):
         self.webview.run_javascript("window.print()")
 
-    def export(self, __, f):
-        fmt = _(f)
+    def export(self, widget, *_):
+        fmt = get_name(widget) # _(f)
         uri = "http://localhost:{}/nbconvert/{}{}".format(self.app.server.port,
                                                           fmt, platformat(self.file))
 
@@ -297,7 +297,7 @@ class JupyterWindow(object):
             self.headerbar.set_title("Pyneapple: "+ os.path.basename(self.file))
             self.headerbar.set_subtitle(os.path.normpath(self.file))
         elif 'WEBKIT_LOAD_FINISHED' in ev:
-            self.set_theme(config('theme'))
+            self.set_theme(go(config('theme')))
             self.ready = True
 
     def load_uri(self, uri):
@@ -307,8 +307,8 @@ class JupyterWindow(object):
         self.webview.load_uri(uri)
         return
 
-    def zoom(self, __, level):
-        name = _(level)
+    def zoom(self, widget, *_):
+        name = get_name(widget) # _(level)
         #print("self.webview.{}()".format(name))
         if name == "zoom_in":
             self.webview.set_zoom_level(self.webview.get_zoom_level() * 1.1)
@@ -341,8 +341,8 @@ class JupyterWindow(object):
 
     # Some of Nathan's utility functions are implemented here.
 
-    def button(self, __, target):
-        button_type = "'%s'" % _(target)[len('button_'):]
+    def button(self, widget, *_):
+        button_type = "'%s'" % get_name(widget)[len('button_'):] # _(target)[len('button_'):]
         if button_type == "'unset'":
             button_type = 'false'
 
@@ -352,21 +352,21 @@ class JupyterWindow(object):
     def toggle_readonly(self, *_):
         self.webview.run_javascript("require('custom/custom').toggleReadOnly();")
 
-    def set_theme(self, *args):
-        try:
-            args[0].set_state(args[1])
-        except:
-            pass
-        theme = "/custom/{}.css".format(_(args[-1]))
+    def set_theme(self, widget):
+        # try:
+        #     args[0].set_state(args[1])
+        # except:
+        #     pass
+        theme = "/custom/{}.css".format(get_name(widget))#_(args[-1]))
         if theme[-8:-4] == "none":
             theme = "#"
 
         self.webview.run_javascript("""global_start_theme="{}";
             require('custom/custom').set_theme(global_start_theme);""".format(theme))
 
-    def change_kernel(self, __, name):
-        __.set_state(name)
-        kernel = _(name)
+    def change_kernel(self, widget, *_):
+        # __.set_state(name)
+        kernel = get_name(widget) # _(name)
         self.webview.run_javascript("Jupyter.notebook.kernel_selector.set_kernel('%s');" % kernel)
 
     def new(self, *_):
@@ -395,12 +395,24 @@ class JupyterWindow(object):
                 spec = eval(contents)
 
                 # We dynamically populate the menu of kernels
-                kernellist = go('change_kernel')
-                kernellist.remove_all()
+                # kernellist = go('change_kernel')
+                # kernellist.remove_all()
+                # for q in spec:
+                #     a = Gio.MenuItem.new(label=spec[q]['spec']['display_name'])
+                #     a.set_action_and_target_value("win.change_kernel", _(q, reverse=True))
+                #     kernellist.append_item(a)
+
+                # old routine
+
+                kernellist = go('change_kernel').get_submenu()
+                for q in kernellist.get_children():
+                    kernellist.remove(q)
                 for q in spec:
-                    a = Gio.MenuItem.new(label=spec[q]['spec']['display_name'])
-                    a.set_action_and_target_value("win.change_kernel", _(q, reverse=True))
-                    kernellist.append_item(a)
+                    a = Gtk.MenuItem(label=spec[q]['spec']['display_name'])
+                    a.connect("activate", self.change_kernel)
+                    Gtk.Buildable.set_name(a, q)
+                    kernellist.append(a)
+                kernellist.show_all()
 
             elif num == -2:
                 # final save on window closure
@@ -471,7 +483,7 @@ class PyneappleServer(object):
 
 class Pyneapple(Gtk.Application):
     def __init__(self):
-        super().__init__(application_id="org.pyneapple",
+        super().__init__(application_id="org.pyneapple.test",
                          flags=Gio.ApplicationFlags.HANDLES_OPEN)
         self.windows = {}
         self.highest_untitled = 0
@@ -487,8 +499,9 @@ class Pyneapple(Gtk.Application):
         #hack
         time.sleep(1)
 
-        builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'menu.ui'))
-        self.set_menubar(go("menubar"))
+        # Right now accels in menus are broken thanks to a Gtk bug
+        # builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'menu.ui'))
+        # self.set_menubar(go("menubar"))
 
     def do_activate(self):
         Gtk.Application.do_activate(self)
