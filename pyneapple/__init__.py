@@ -24,6 +24,7 @@ import shutil
 import hashlib
 
 import urllib.request
+import urllib.parse
 from multiprocessing import Process
 from notebook.notebookapp import NotebookApp
 
@@ -201,11 +202,11 @@ class JupyterWindow(object):
         return True
 
     def error(self, message, message2):
-        dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
+        dialog = Gtk.MessageDialog(self.window, 0, Gtk.MessageType.ERROR,
                                    Gtk.ButtonsType.CANCEL,
-                                   message, flags=dialog_flags)
+                                   str(message), flags=dialog_flags)
         dialog.format_secondary_text(
-            message2)
+            str(message2))
         dialog.run()
 
         dialog.destroy()
@@ -257,8 +258,10 @@ class JupyterWindow(object):
 
     def export(self, widget, *_):
         fmt = get_name(widget) # _(f)
-        uri = "http://localhost:{}/nbconvert/{}{}".format(self.app.server.port,
-                                                          fmt, platformat(self.file))
+        uri = "http://localhost:{}/nbconvert/{}{}".\
+            format(self.app.server.port, fmt, urllib.parse.quote(os.path.normpath(platformat(self.file))))
+
+        print(uri)
 
         extension = {'python':'*.py', 'markdown':'*.md', 'html':'*.html'}
         name = {'python': 'Python', 'markdown': 'Markdown', 'html': 'HTML'}[fmt]
