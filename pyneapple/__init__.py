@@ -516,7 +516,7 @@ class Pyneapple(Gtk.Application):
             if recents:
                 # sort by last visited
                 # parse file URI
-                self.open_filename(urllib.parse.unquote(recents[-1][0])[7:])
+                self.open_filename(urllib.parse.unquote(recents[-1][1])[7:])
             else:
                 self.new_ipynb()
 
