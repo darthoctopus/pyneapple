@@ -515,6 +515,7 @@ class Pyneapple(Gtk.Application):
             recents = [[q.get_modified(), q.get_uri()] for q in Gtk.RecentManager.get_default().get_items() if ('pineapple' in q.get_applications() or 'pyneapple.py' in q.get_applications())]
             if recents:
                 # sort by last visited
+                recents = sorted(recents)
                 # parse file URI
                 self.open_filename(urllib.parse.unquote(recents[-1][1])[7:])
             else:
