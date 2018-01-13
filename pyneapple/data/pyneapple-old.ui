@@ -52,6 +52,7 @@
     <property name="border_width">0</property>
     <property name="default_width">800</property>
     <property name="default_height">600</property>
+    <property name="icon_name">pyneapple</property>
     <child>
       <object class="GtkBox" id="box">
         <property name="visible">True</property>
@@ -740,6 +741,15 @@
                       <object class="GtkSeparatorMenuItem">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="reset">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Reset View</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="reset" swapped="no"/>
                       </object>
                     </child>
                     <child>

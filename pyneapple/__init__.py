@@ -27,6 +27,7 @@ import urllib.request
 import urllib.parse
 from multiprocessing import Process
 from notebook.notebookapp import NotebookApp
+import pathlib
 
 from .config import config
 from .platform import Gtk, GLib, Gio, WebView, platformat, SYSTEM
@@ -301,6 +302,7 @@ class JupyterWindow(object):
             self.headerbar.set_subtitle(os.path.normpath(self.file))
         elif 'WEBKIT_LOAD_FINISHED' in ev:
             self.set_theme(go(config('theme')))
+            Gtk.RecentManager.get_default().add_item(pathlib.Path(self.file).as_uri())
             self.ready = True
 
     def load_uri(self, uri):
@@ -509,7 +511,15 @@ class Pyneapple(Gtk.Application):
     def do_activate(self):
         Gtk.Application.do_activate(self)
         if not self.windows:
-            self.new_ipynb()
+            # check to see if we have opened a file recently
+            recents = [q.get_uri() for q in Gtk.RecentManager.get_default().get_items() if ('pineapple' in q.get_applications() or 'pyneapple.py' in q.get_applications())]
+            if recents:
+                # parse file URI
+                self.open_filename(urllib.parse.unquote(recents[0])[7:])
+            else:
+                self.new_ipynb()
+        else:
+            self.windows.values[-1].present()
 
     def new_ipynb(self):
         while os.path.exists(os.path.join(os.path.expanduser(config('TmpDir')),
