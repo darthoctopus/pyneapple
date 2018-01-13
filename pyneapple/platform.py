@@ -9,7 +9,7 @@ if SYSTEM == "Windows":
     # Pylint doesn't like this.
     from gi.repository import WebKit
     platformat = lambda x: x[2:] if x[1] == ":" else x
-    config['csd'] = False
+    config['csd'] = "False"
     class WebView(WebKit.WebView):
         def run_javascript(self, script):
             return super().execute_script(script)
