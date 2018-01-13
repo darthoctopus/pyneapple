@@ -22,15 +22,18 @@ import os
 import time
 import shutil
 import hashlib
+import pathlib
 
 import urllib.request
 import urllib.parse
 from multiprocessing import Process
 from notebook.notebookapp import NotebookApp
-import pathlib
 
+import gi
 from .config import config
-from .platform import Gtk, GLib, Gio, WebView, platformat, SYSTEM
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gio, Gtk, GLib
+from .platform import WebView, platformat, SYSTEM
 
 builder = Gtk.Builder()
 go = builder.get_object
@@ -115,7 +118,12 @@ class JupyterWindow(object):
         """
 
         # Build GUI from Glade file
-        builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'pyneapple-old.ui'))
+
+        if not config.getboolean('csd'):
+            builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'windows.ui'))
+
+        else:
+            builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'pyneapple-old.ui'))
 
         self.app = app
         self.file = file
@@ -124,6 +132,10 @@ class JupyterWindow(object):
         # Get objects
         self.window = go('window')
         self.headerbar = go('headerbar')
+
+        if not config.getboolean('csd'):
+            self.headerbar.get_style_context().add_class(
+                Gtk.STYLE_CLASS_PRIMARY_TOOLBAR)
 
         # Create WebView
         self.webview = WebView()
@@ -260,9 +272,8 @@ class JupyterWindow(object):
     def export(self, widget, *_):
         fmt = get_name(widget) # _(f)
         uri = "http://localhost:{}/nbconvert/{}{}".\
-            format(self.app.server.port, fmt, urllib.parse.quote(os.path.normpath(platformat(self.file))))
-
-        print(uri)
+            format(self.app.server.port, fmt,
+                   urllib.parse.quote(os.path.normpath(platformat(self.file))))
 
         extension = {'python':'*.py', 'markdown':'*.md', 'html':'*.html'}
         name = {'python': 'Python', 'markdown': 'Markdown', 'html': 'HTML'}[fmt]
@@ -298,12 +309,20 @@ class JupyterWindow(object):
 
     def load_event(self, ev):
         if 'WEBKIT_LOAD_COMMITTED' in ev:
-            self.headerbar.set_title("Pyneapple: "+ os.path.basename(self.file))
-            self.headerbar.set_subtitle(os.path.normpath(self.file))
+            self.set_title("Pyneapple: "+ os.path.basename(self.file),
+                           os.path.normpath(self.file))
         elif 'WEBKIT_LOAD_FINISHED' in ev:
-            self.set_theme(go(config('theme')))
+            self.set_theme(go(config.get('theme')))
             Gtk.RecentManager.get_default().add_item(pathlib.Path(self.file).as_uri())
             self.ready = True
+
+    def set_title(self, title, subtitle=None):
+        if not config.getboolean('csd'):
+            self.window.set_title(title)
+        else:
+            self.headerbar.set_title(title)
+            if subtitle is not None:
+                self.headerbar.set_subtitle(subtitle)
 
     def load_uri(self, uri):
         """
@@ -336,10 +355,10 @@ class JupyterWindow(object):
             widget_id = widget_id[:-len('_toolbar')]
         self.jupyter_click_run(widget_id)
 
-    def jupyter_click_menu(self, __, name):
+    # def jupyter_click_menu(self, __, name):
 
-        widget_id = _(name)
-        self.jupyter_click_run(widget_id)
+    #     widget_id = _(name)
+    #     self.jupyter_click_run(widget_id)
 
     def jupyter_click_run(self, name):
         self.webview.run_javascript("Jupyter.menubar.element.find('#%s').click(); true" % name)
@@ -431,9 +450,9 @@ class JupyterWindow(object):
                 # kernel busy indicator: "true" if busy and "false" otherwise
                 busy = True if contents == "true" else False
                 go('interrupt_kernel_toolbar').set_sensitive(busy)
-                self.headerbar.set_title("Pyneapple: %s%s"
-                                         %  (os.path.basename(self.file),
-                                             " (busy)" if busy else ""))
+                self.set_title("Pyneapple: %s%s"
+                               %  (os.path.basename(self.file),
+                                   " (busy)" if busy else ""))
             else:
                 # Maybe Nathan coded other callbacks idk
                 print(s)
@@ -458,8 +477,8 @@ class PyneappleServer(object):
 
         # Always serve from root
         sys.argv = [sys.executable, '--port={}'.format(self.port), '/']
-        os.environ['JUPYTER_CONFIG_DIR'] = os.path.expanduser(config('ConfigDir'))
-        os.environ['JUPYTER_DATA_DIR'] = os.path.expanduser(config('DataDir'))
+        os.environ['JUPYTER_CONFIG_DIR'] = os.path.expanduser(config.get('ConfigDir'))
+        os.environ['JUPYTER_DATA_DIR'] = os.path.expanduser(config.get('DataDir'))
 
         # copy custom resources
         # I used to symlink but this breaks when doing pip upgrades
@@ -475,7 +494,7 @@ class PyneappleServer(object):
         except:
             print("Custom Resources Exist")
         try:
-            os.makedirs(os.path.expanduser(config('TmpDir')))
+            os.makedirs(os.path.expanduser(config.get('TmpDir')))
         except:
             print("Temp directory Exists")
 
@@ -512,10 +531,12 @@ class Pyneapple(Gtk.Application):
         Gtk.Application.do_activate(self)
         if not self.windows:
             # check to see if we have opened a file recently
-            recents = [[q.get_modified(), q.get_uri()] for q in Gtk.RecentManager.get_default().get_items() if ('pineapple' in q.get_applications() or 'pyneapple.py' in q.get_applications())]
+            recents = [[q.get_modified(), q.get_uri()] for q in Gtk.RecentManager.get_default().\
+                        get_items() if ('pineapple' in q.get_applications()\
+                            or 'pyneapple.py' in q.get_applications())]
             if recents:
                 # sort by last visited
-                print(sorted(recents))
+                recents = sorted(recents)
                 # parse file URI
                 for _, f in recents[::-1]:
                     ff = urllib.parse.unquote(f)[7:]
@@ -529,12 +550,12 @@ class Pyneapple(Gtk.Application):
                 self.new_ipynb()
 
     def new_ipynb(self):
-        while os.path.exists(os.path.join(os.path.expanduser(config('TmpDir')),
+        tmp = os.path.expanduser(config.get('TmpDir'))
+        while os.path.exists(os.path.join(tmp,
                                           "Untitled %d.ipynb" % self.highest_untitled)):
             self.highest_untitled += 1
 
-        fn = os.path.join(os.path.expanduser(config('TmpDir')),
-                          "Untitled %d.ipynb" % self.highest_untitled)
+        fn = os.path.join(tmp, "Untitled %d.ipynb" % self.highest_untitled)
 
         with open(fn, "w") as f:
             f.write(NEW)

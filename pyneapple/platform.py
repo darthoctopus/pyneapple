@@ -1,7 +1,6 @@
 import platform
 import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gio, Gtk, GLib
+from pyneapple.config import config
 
 SYSTEM = platform.system()
 del platform
@@ -10,6 +9,7 @@ if SYSTEM == "Windows":
     # Pylint doesn't like this.
     from gi.repository import WebKit
     platformat = lambda x: x[2:] if x[1] == ":" else x
+    config['csd'] = False
     class WebView(WebKit.WebView):
         def run_javascript(self, script):
             return super().execute_script(script)
