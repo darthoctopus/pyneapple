@@ -512,14 +512,13 @@ class Pyneapple(Gtk.Application):
         Gtk.Application.do_activate(self)
         if not self.windows:
             # check to see if we have opened a file recently
-            recents = [q.get_uri() for q in Gtk.RecentManager.get_default().get_items() if ('pineapple' in q.get_applications() or 'pyneapple.py' in q.get_applications())]
+            recents = [[q.get_modified(), q.get_uri()] for q in Gtk.RecentManager.get_default().get_items() if ('pineapple' in q.get_applications() or 'pyneapple.py' in q.get_applications())]
             if recents:
+                # sort by last visited
                 # parse file URI
-                self.open_filename(urllib.parse.unquote(recents[0])[7:])
+                self.open_filename(urllib.parse.unquote(recents[-1][0])[7:])
             else:
                 self.new_ipynb()
-        else:
-            self.windows.values[-1].present()
 
     def new_ipynb(self):
         while os.path.exists(os.path.join(os.path.expanduser(config('TmpDir')),
