@@ -519,9 +519,12 @@ class Pyneapple(Gtk.Application):
                 # parse file URI
                 for _, f in recents[::-1]:
                     ff = urllib.parse.unquote(f)[7:]
-                    if os.path.isfile(ff):
+                    if ff[-6:] == ".ipynb" and os.path.isfile(ff):
                         self.open_filename(ff)
-                        break
+                        return
+
+                # if none of the recently opened files are valid, we make a new one as a last resort
+                self.new_ipynb()
             else:
                 self.new_ipynb()
 
