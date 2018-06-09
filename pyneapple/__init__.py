@@ -35,8 +35,6 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk, GLib
 from .platform import WebView, platformat, SYSTEM
 
-builder = Gtk.Builder()
-go = builder.get_object
 get_name = Gtk.Buildable.get_name
 dialog_flags = (Gtk.DialogFlags.MODAL|
                 Gtk.DialogFlags.DESTROY_WITH_PARENT|
@@ -116,6 +114,9 @@ class JupyterWindow(object):
         """
         Build GUI
         """
+
+        builder = Gtk.Builder()
+		self.go = builder.get_object
 
         # Build GUI from Glade file
 
