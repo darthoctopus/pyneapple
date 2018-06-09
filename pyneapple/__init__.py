@@ -539,8 +539,7 @@ class Pyneapple(Gtk.Application):
         if not self.windows:
             # check to see if we have opened a file recently
             recents = [[q.get_modified(), q.get_uri()] for q in Gtk.RecentManager.get_default().\
-                        get_items() if ('pyneapple' in q.get_applications()\
-                            or 'pyneapple.py' in q.get_applications())]
+                        get_items() if 'pyneapple' in q.get_applications()]
             if recents:
                 # sort by last visited
                 recents = sorted(recents)
