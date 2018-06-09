@@ -19,12 +19,12 @@
                 <item>
                     <attribute name="target">save_checkpoint</attribute>
                     <attribute name="label">Save</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                     <attribute name="accel">&lt;Primary&gt;s</attribute>
                 </item>
                 <item>
                     <attribute name="label">Save As</attribute>
-                    <attribute name="action">win.save_as</attribute>
+                    <attribute name="action">win.save-as</attribute>
                     <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;s</attribute>
                 </item>
             </section>
@@ -50,11 +50,11 @@
                 <item>
                     <attribute name="target">trust_notebook</attribute>
                     <attribute name="label">Trust Notebook</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                 </item>
                 <item>
                     <attribute name="label">Print</attribute>
-                    <attribute name="action">win.print_dialog</attribute>
+                    <attribute name="action">win.print-dialog</attribute>
                     <attribute name="accel">&lt;Primary&gt;p</attribute>
                 </item>
             </section>
@@ -79,19 +79,19 @@
                 <item>
                     <attribute name="target">cut_cell</attribute>
                     <attribute name="label">Cut Cell</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                     <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;x</attribute>
                 </item>
                 <item>
                     <attribute name="target">copy_cell</attribute>
                     <attribute name="label">Copy Cell</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                     <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;c</attribute>
                 </item>
                 <item>
                     <attribute name="target">paste_cell_below</attribute>
                     <attribute name="label">Paste Cell</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                     <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;v</attribute>
                 </item>
             </section>
@@ -99,20 +99,20 @@
                 <item>
                     <attribute name="target">insert_cell_below</attribute>
                     <attribute name="label">Insert Cell Below</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                 </item>
             </section>
             <section>
                 <item>
                     <attribute name="target">delete_cell</attribute>
                     <attribute name="label">Delete Cell</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                     <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;d</attribute>
                 </item>
                 <item>
                     <attribute name="target">undelete_cell</attribute>
                     <attribute name="label">Undelete Cell</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                     <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;u</attribute>
                 </item>
             </section>
@@ -120,13 +120,13 @@
                 <item>
                     <attribute name="target">split_cell</attribute>
                     <attribute name="label">Split Cell</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
-                    <attribute name="accel">&lt;Primary&gt;_</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;minus</attribute>
                 </item>
                 <item>
                     <attribute name="target">merge_cell_below</attribute>
                     <attribute name="label">Merge Cell Below</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                     <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;m</attribute>
                 </item>
             </section>
@@ -134,13 +134,13 @@
                 <item>
                     <attribute name="target">move_cell_up</attribute>
                     <attribute name="label">Move Cell Up</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                     <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;Up</attribute>
                 </item>
                 <item>
                     <attribute name="target">move_cell_down</attribute>
                     <attribute name="label">Move Cell Down</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                     <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;Down</attribute>
                 </item>
             </section>
@@ -151,7 +151,7 @@
                 <item>
                     <attribute name="target">run_cell</attribute>
                     <attribute name="label">Run</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                     <attribute name="accel">&lt;Primary&gt;Return</attribute>
                 </item>
             </section>
@@ -159,18 +159,18 @@
                 <item>
                     <attribute name="target">run_all_cells</attribute>
                     <attribute name="label">Run All</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                     <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;Return</attribute>
                 </item>
                 <item>
                     <attribute name="target">run_all_cells_above</attribute>
                     <attribute name="label">Run All Above</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                 </item>
                 <item>
                     <attribute name="target">run_all_cells_below</attribute>
                     <attribute name="label">Run All Below</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                 </item>
             </section>
             <section>
@@ -180,19 +180,19 @@
                     <item>
                         <attribute name="target">to_code</attribute>
                         <attribute name="label">Code</attribute>
-                        <attribute name="action">win.jupyter_click_menu</attribute>
+                        <attribute name="action">win.jupyter-click-menu</attribute>
                         <attribute name="accel">&lt;Primary&gt;y</attribute>
                     </item>
                     <item>
                         <attribute name="target">to_markdown</attribute>
                         <attribute name="label">Markdown</attribute>
-                        <attribute name="action">win.jupyter_click_menu</attribute>
+                        <attribute name="action">win.jupyter-click-menu</attribute>
                         <attribute name="accel">&lt;Primary&gt;m</attribute>
                     </item>
                     <item>
                         <attribute name="target">to_raw</attribute>
                         <attribute name="label">Raw</attribute>
-                        <attribute name="action">win.jupyter_click_menu</attribute>
+                        <attribute name="action">win.jupyter-click-menu</attribute>
                         <attribute name="accel">&lt;Primary&gt;r</attribute>
                     </item>
                 </submenu>
@@ -200,7 +200,7 @@
             <section>
                 <item>
                     <attribute name="label">Toggle Read-Only</attribute>
-                    <attribute name="action">win.toggle_readonly</attribute>
+                    <attribute name="action">win.toggle-readonly</attribute>
                 </item>
                 <submenu>
                     <attribute name="label">Show As Button</attribute>
@@ -227,7 +227,7 @@
                 </submenu>
                 <item>
                     <attribute name="label">Clear Output</attribute>
-                    <attribute name="action">win.clear_output</attribute>
+                    <attribute name="action">win.clear-output</attribute>
                 </item>
             </section>
         </submenu>
@@ -237,19 +237,19 @@
                 <item>
                     <attribute name="target">int_kernel</attribute>
                     <attribute name="label">_Interrupt</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                     <attribute name="accel">&lt;Primary&gt;i</attribute>
                 </item>
                 <item>
                     <attribute name="target">restart_kernel</attribute>
                     <attribute name="label">Restart</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                     <attribute name="accel">&lt;Primary&gt;0</attribute>
                 </item>
                 <item>
                     <attribute name="target">reconnect_kernel</attribute>
                     <attribute name="label">Reconnect</attribute>
-                    <attribute name="action">win.jupyter_click_menu</attribute>
+                    <attribute name="action">win.jupyter-click-menu</attribute>
                 </item>
                 <submenu id="change_kernel">
                     <attribute name="label">Change</attribute>
@@ -265,27 +265,27 @@
                         <item>
                             <attribute name="target">theme-none</attribute>
                             <attribute name="label">None</attribute>
-                            <attribute name="action">win.set_theme</attribute>
+                            <attribute name="action">win.set-theme</attribute>
                         </item>
                         <item>
                             <attribute name="target">theme-light</attribute>
                             <attribute name="label">Light</attribute>
-                            <attribute name="action">win.set_theme</attribute>
+                            <attribute name="action">win.set-theme</attribute>
                         </item>
                         <item>
                             <attribute name="target">theme-dark</attribute>
                             <attribute name="label">Dark</attribute>
-                            <attribute name="action">win.set_theme</attribute>
+                            <attribute name="action">win.set-theme</attribute>
                         </item>
                         <item>
                             <attribute name="target">theme-borlandia</attribute>
                             <attribute name="label">Borlandia</attribute>
-                            <attribute name="action">win.set_theme</attribute>
+                            <attribute name="action">win.set-theme</attribute>
                         </item>
                         <item>
                             <attribute name="target">theme-red</attribute>
                             <attribute name="label">Red</attribute>
-                            <attribute name="action">win.set_theme</attribute>
+                            <attribute name="action">win.set-theme</attribute>
                         </item>
                     </section>
                 </submenu>
@@ -315,7 +315,7 @@
                 </item>
                 <item>
                     <attribute name="label">Toggle Toolbar</attribute>
-                    <attribute name="action">win.toggle_csd</attribute>
+                    <attribute name="action">win.toggle-csd</attribute>
                 </item>
             </section>
         </submenu>
@@ -324,7 +324,7 @@
             <item>
                 <attribute name="target">keyboard_shortcuts</attribute>
                 <attribute name="label">Keyboard Shortcuts (Jupyter)</attribute>
-                <attribute name="action">win.jupyter_click_menu</attribute>
+                <attribute name="action">win.jupyter-click-menu</attribute>
             </item>
         </submenu>
     </menu>

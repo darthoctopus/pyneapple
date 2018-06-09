@@ -88,14 +88,14 @@ NEW = """{
 # Why bother with GObject if you're going to
 # totally disregard the python type system
 
-# STRING = GLib.VariantType.new('s')
-# def _(thing, reverse=False):
-#     if isinstance(thing, str):
-#         if reverse:
-#             return GLib.Variant.new_string(thing)
-#         return thing
-#     else:
-#         return thing.get_string()
+STRING = GLib.VariantType.new('s')
+def _(thing, reverse=False):
+    if isinstance(thing, str):
+        if reverse:
+            return GLib.Variant.new_string(thing)
+        return thing
+    else:
+        return thing.get_string()
 
 WHERE_AM_I = os.path.abspath(os.path.dirname(__file__))
 
@@ -124,7 +124,7 @@ class JupyterWindow(object):
             builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'windows.ui'))
 
         else:
-            builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'pyneapple-old.ui'))
+            builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'pyneapple.ui'))
 
         self.app = app
         self.file = file
@@ -166,26 +166,27 @@ class JupyterWindow(object):
         # Did I mention that Gio actions are horrible? let's introduce more
         # boilerplate for the sake of it woo
 
-        # for i in ["close", "quit", "open", "save_as", "print_dialog", "reset",
-        #           "clear_output", "toggle_csd", "toggle_readonly", "new"]:
-        #     eval("self.action_hack('{0}', self.{0})".format(i))
+        for i in ["close", "quit", "open", "save_as", "print_dialog", "reset",
+                  "clear_output", "toggle_csd", "toggle_readonly", "new"]:
+            eval(f"self.action_hack('{i}', self.{i})")
 
-        # for i in ["jupyter_click_menu", "zoom", "button", "export"]:
-        #     eval("self.action_hack('{0}', self.{0}, True)".format(i))
+        for i in ["jupyter_click_menu", "zoom", "button", "export"]:
+            eval(f"self.action_hack('{i}', self.{i}, True)")
 
-        # for i in ["change_kernel", "set_theme"]:
-        #     eval("self.action_hack('{0}', self.{0}, True, True)".format(i))
+        for i in ["change_kernel", "set_theme"]:
+            eval(f"self.action_hack('{i}', self.{i}, True, True)")
 
-    # def action_hack(self, name, method, param=False, stateful=False):
-    #     if param:
-    #         if stateful:
-    #             q = Gio.SimpleAction.new_stateful(name, STRING, _('', reverse=True))
-    #         else:
-    #             q = Gio.SimpleAction.new(name, STRING)
-    #     else:
-    #         q = Gio.SimpleAction.new(name, None)
-    #     q.connect("activate", method)
-    #     self.window.add_action(q)
+    def action_hack(self, name, method, param=False, stateful=False):
+        name = name.replace('_', '-')
+        if param:
+            if stateful:
+                q = Gio.SimpleAction.new_stateful(name, STRING, _('', reverse=True))
+            else:
+                q = Gio.SimpleAction.new(name, STRING)
+        else:
+            q = Gio.SimpleAction.new(name, None)
+        q.connect("activate", method)
+        self.window.add_action(q)
 
     def quit(self, *_):
         self.app.quit()
@@ -257,8 +258,9 @@ class JupyterWindow(object):
             try:
                 shutil.copy(self.file, dialog.get_filename())
                 self.ready = False
-                self.load_uri("http://localhost:{}/notebooks{}"
-                              .format(self.app.server.port, platformat(dialog.get_filename())))
+                self.load_uri("http://localhost:{}/notebooks{}?token={}"
+                              .format(self.app.server.port, platformat(dialog.get_filename()),
+                                      self.app.server.token))
             except IOError as e:
                 self.error("Error Saving Notebook", e)
 
@@ -270,11 +272,12 @@ class JupyterWindow(object):
     def print_dialog(self, *_):
         self.webview.run_javascript("window.print()")
 
-    def export(self, widget, *_):
-        fmt = get_name(widget) # _(f)
-        uri = "http://localhost:{}/nbconvert/{}{}".\
+    def export(self, __, f):
+        fmt = _(f)
+        uri = "http://localhost:{}/nbconvert/{}{}?token={}".\
             format(self.app.server.port, fmt,
-                   urllib.parse.quote(os.path.normpath(platformat(self.file))))
+                   urllib.parse.quote(os.path.normpath(platformat(self.file))),
+                   self.app.server.token)
 
         extension = {'python':'*.py', 'markdown':'*.md', 'html':'*.html'}
         name = {'python': 'Python', 'markdown': 'Markdown', 'html': 'HTML'}[fmt]
@@ -313,7 +316,7 @@ class JupyterWindow(object):
             self.set_title("Pyneapple: "+ os.path.basename(self.file),
                            os.path.normpath(self.file))
         elif 'WEBKIT_LOAD_FINISHED' in ev:
-            self.set_theme(self.go(config.get('theme')))
+            self.set_theme(config.get('theme'))
             Gtk.RecentManager.get_default().add_item(pathlib.Path(self.file).as_uri())
             self.ready = True
 
@@ -332,8 +335,8 @@ class JupyterWindow(object):
         self.webview.load_uri(uri)
         return
 
-    def zoom(self, widget, *_):
-        name = get_name(widget) # _(level)
+    def zoom(self, __, level):
+        name = _(level)
         #print("self.webview.{}()".format(name))
         if name == "zoom_in":
             self.webview.set_zoom_level(self.webview.get_zoom_level() * 1.1)
@@ -356,18 +359,18 @@ class JupyterWindow(object):
             widget_id = widget_id[:-len('_toolbar')]
         self.jupyter_click_run(widget_id)
 
-    # def jupyter_click_menu(self, __, name):
+    def jupyter_click_menu(self, __, name):
 
-    #     widget_id = _(name)
-    #     self.jupyter_click_run(widget_id)
+        widget_id = _(name)
+        self.jupyter_click_run(widget_id)
 
     def jupyter_click_run(self, name):
         self.webview.run_javascript("Jupyter.menubar.element.find('#%s').click(); true" % name)
 
     # Some of Nathan's utility functions are implemented here.
 
-    def button(self, widget, *_):
-        button_type = "'%s'" % get_name(widget)[len('button_'):] # _(target)[len('button_'):]
+    def button(self, __, target):
+        button_type = _(target)[len('button_'):]
         if button_type == "'unset'":
             button_type = 'false'
 
@@ -377,22 +380,23 @@ class JupyterWindow(object):
     def toggle_readonly(self, *_):
         self.webview.run_javascript("require('custom/custom').toggleReadOnly();")
 
-    def set_theme(self, widget):
-        # try:
-        #     args[0].set_state(args[1])
-        # except:
-        #     pass
-        theme = "/custom/{}.css".format(get_name(widget))#_(args[-1]))
+    def set_theme(self, *args):
+        theme = "/custom/{}.css".format(_(args[-1]))
         if theme[-8:-4] == "none":
             theme = "#"
 
         self.webview.run_javascript("""global_start_theme="{}";
             require('custom/custom').set_theme(global_start_theme);""".format(theme))
 
-    def change_kernel(self, widget, *_):
-        # __.set_state(name)
-        kernel = get_name(widget) # _(name)
+        try:
+            args[0].set_state(args[1])
+        except:
+            pass
+
+    def change_kernel(self, __, name):
+        kernel = _(name)
         self.webview.run_javascript("Jupyter.notebook.kernel_selector.set_kernel('%s');" % kernel)
+        action.set_state(name)
 
     def new(self, *_):
         self.app.new_ipynb()
@@ -420,24 +424,24 @@ class JupyterWindow(object):
                 spec = eval(contents)
 
                 # We dynamically populate the menu of kernels
-                # kernellist = self.go('change_kernel')
-                # kernellist.remove_all()
-                # for q in spec:
-                #     a = Gio.MenuItem.new(label=spec[q]['spec']['display_name'])
-                #     a.set_action_and_target_value("win.change_kernel", _(q, reverse=True))
-                #     kernellist.append_item(a)
+                kernellist = self.app.go('change_kernel')
+                kernellist.remove_all()
+                for q in spec:
+                    a = Gio.MenuItem.new(label=spec[q]['spec']['display_name'])
+                    a.set_action_and_target_value("win.change-kernel", _(q, reverse=True))
+                    kernellist.append_item(a)
 
                 # old routine
 
-                kernellist = self.go('change_kernel').get_submenu()
-                for q in kernellist.get_children():
-                    kernellist.remove(q)
-                for q in spec:
-                    a = Gtk.MenuItem(label=spec[q]['spec']['display_name'])
-                    a.connect("activate", self.change_kernel)
-                    Gtk.Buildable.set_name(a, q)
-                    kernellist.append(a)
-                kernellist.show_all()
+                # kernellist = self.go('change_kernel').get_submenu()
+                # for q in kernellist.get_children():
+                #     kernellist.remove(q)
+                # for q in spec:
+                #     a = Gtk.MenuItem(label=spec[q]['spec']['display_name'])
+                #     a.connect("activate", self.change_kernel)
+                #     Gtk.Buildable.set_name(a, q)
+                #     kernellist.append(a)
+                # kernellist.show_all()
 
             elif num == -2:
                 # final save on window closure
@@ -525,9 +529,10 @@ class Pyneapple(Gtk.Application):
         time.sleep(1)
 
         # Right now accels in menus are broken thanks to a Gtk bug
-        # builder = Gtk.Builder()
-        # builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'menu.ui'))
-        # self.set_menubar(builder.get_object("menubar"))
+        builder = Gtk.Builder()
+        self.go = builder.get_object
+        builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'menu.ui'))
+        self.set_menubar(builder.get_object("menubar"))
 
     def do_activate(self):
         Gtk.Application.do_activate(self)
