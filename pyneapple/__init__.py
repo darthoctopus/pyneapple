@@ -116,7 +116,7 @@ class JupyterWindow(object):
         """
 
         builder = Gtk.Builder()
-		self.go = builder.get_object
+        self.go = builder.get_object
 
         # Build GUI from Glade file
 
@@ -131,8 +131,8 @@ class JupyterWindow(object):
         self.ready = False
 
         # Get objects
-        self.window = go('window')
-        self.headerbar = go('headerbar')
+        self.window = self.go('window')
+        self.headerbar = self.go('headerbar')
 
         if not config.getboolean('csd'):
             self.headerbar.get_style_context().add_class(
@@ -140,7 +140,7 @@ class JupyterWindow(object):
 
         # Create WebView
         self.webview = WebView()
-        scrolled = go('scrolled')
+        scrolled = self.go('scrolled')
         scrolled.add_with_viewport(self.webview)
 
         # Connect signals
@@ -313,7 +313,7 @@ class JupyterWindow(object):
             self.set_title("Pyneapple: "+ os.path.basename(self.file),
                            os.path.normpath(self.file))
         elif 'WEBKIT_LOAD_FINISHED' in ev:
-            self.set_theme(go(config.get('theme')))
+            self.set_theme(self.go(config.get('theme')))
             Gtk.RecentManager.get_default().add_item(pathlib.Path(self.file).as_uri())
             self.ready = True
 
@@ -420,7 +420,7 @@ class JupyterWindow(object):
                 spec = eval(contents)
 
                 # We dynamically populate the menu of kernels
-                # kernellist = go('change_kernel')
+                # kernellist = self.go('change_kernel')
                 # kernellist.remove_all()
                 # for q in spec:
                 #     a = Gio.MenuItem.new(label=spec[q]['spec']['display_name'])
@@ -429,7 +429,7 @@ class JupyterWindow(object):
 
                 # old routine
 
-                kernellist = go('change_kernel').get_submenu()
+                kernellist = self.go('change_kernel').get_submenu()
                 for q in kernellist.get_children():
                     kernellist.remove(q)
                 for q in spec:
@@ -450,7 +450,7 @@ class JupyterWindow(object):
             elif num == -1:
                 # kernel busy indicator: "true" if busy and "false" otherwise
                 busy = True if contents == "true" else False
-                go('interrupt_kernel_toolbar').set_sensitive(busy)
+                self.go('interrupt_kernel_toolbar').set_sensitive(busy)
                 self.set_title("Pyneapple: %s%s"
                                %  (os.path.basename(self.file),
                                    " (busy)" if busy else ""))
@@ -525,8 +525,9 @@ class Pyneapple(Gtk.Application):
         time.sleep(1)
 
         # Right now accels in menus are broken thanks to a Gtk bug
+        # builder = Gtk.Builder()
         # builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'menu.ui'))
-        # self.set_menubar(go("menubar"))
+        # self.set_menubar(builder.get_object("menubar"))
 
     def do_activate(self):
         Gtk.Application.do_activate(self)

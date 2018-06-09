@@ -5,7 +5,7 @@ setup(
     packages=find_packages(),
     scripts=['scripts/pyneapple'],
 
-    install_requires=['notebook>=5.1'],
+    install_requires=['notebook>=5.1', 'setproctitle'],
 
     package_data={
         'pyneapple': ['data/*', 'custom/*', 'custom/*/*'],
