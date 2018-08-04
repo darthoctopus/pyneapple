@@ -1,6 +1,7 @@
 import platform
 import gi
 from pyneapple.config import config
+import os
 
 SYSTEM = platform.system()
 del platform
@@ -18,3 +19,16 @@ else:
     from gi.repository import WebKit2
     WebView = WebKit2.WebView
     platformat = lambda x: x
+
+
+def open_term(path):
+    if SYSTEM == "Windows":
+        os.system("%s /K \"cd %s\"" % (config['term'], path))
+    elif SYSTEM == "Linux":
+        os.system("%s --working-directory=\"%s\"" % (config['term'], path))
+
+def open_folder(path):
+    if SYSTEM == "Windows":
+        os.system("explorer.exe \"%s\"" % path)
+    elif SYSTEM == "Linux":
+        os.system("xdg-open \"%s\"" % path)

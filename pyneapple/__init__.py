@@ -34,7 +34,7 @@ from .config import config
 gi.require_version('Gtk', '3.0')
 gi.require_version('Notify', '0.7')
 from gi.repository import Gio, Gtk, GLib, Notify
-from .platform import WebView, platformat, SYSTEM
+from .platform import WebView, platformat, SYSTEM, open_term
 
 get_name = Gtk.Buildable.get_name
 dialog_flags = (Gtk.DialogFlags.MODAL|
@@ -170,7 +170,8 @@ class JupyterWindow(object):
         # boilerplate for the sake of it woo
 
         for i in ["close", "quit", "open", "save_as", "print_dialog", "reset",
-                  "clear_output", "toggle_csd", "toggle_readonly", "new"]:
+                  "clear_output", "toggle_csd", "toggle_readonly", "new",
+                  "open_terminal", "open_folder"]:
             eval(f"self.action_hack('{i}', self.{i})")
 
         for i in ["jupyter_click_menu", "zoom", "button", "export"]:
@@ -262,6 +263,22 @@ class JupyterWindow(object):
             self.app.open_filename(dialog.get_filename())
 
         dialog.destroy()
+
+    def open_terminal(self, *_):
+        """
+        Open a terminal window in the directory of the file
+        """
+
+        path = os.path.dirname(platformat(self.file))
+        open_term(path)
+
+    def open_folder(self, *_):
+        """
+        Open a file manager window in the directory of the file
+        """
+
+        path = os.path.dirname(platformat(self.file))
+        open_folder(path)
 
     def reset(self, *_):
         """
