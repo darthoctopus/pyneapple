@@ -23,6 +23,7 @@ import time
 import shutil
 import hashlib
 import pathlib
+import asyncio
 
 import urllib.request
 import urllib.parse
@@ -133,6 +134,7 @@ class JupyterWindow(object):
         self.app = app
         self.file = file
         self.ready = False
+        self.busy = False
 
         # Get objects
         self.window = self.go('window')
@@ -537,22 +539,30 @@ class JupyterWindow(object):
 
             elif num == -1:
                 # kernel busy indicator: "true" if busy and "false" otherwise
-                busy = True if contents == "true" else False
-                self.go('interrupt_kernel_toolbar').set_sensitive(busy)
+                self.busy = True if contents == "true" else False
+                self.go('interrupt_kernel_toolbar').set_sensitive(self.busy)
                 self.set_title("Pyneapple: %s%s"
                                %  (os.path.basename(self.file),
-                                   " (busy)" if busy else ""))
-                if busy:
-                    self.done_notification.close()
-                else:
-                    if not self.window.is_active():
-                        self.done_notification.update("Computation Finished",
-                                                      "Evaluation of cell in %s complete"\
-                                                      % os.path.basename(self.file))
-                        self.done_notification.show()
+                                   " (busy)" if self.busy else ""))
+                # # asyncio.run(self.notify()) in 3.7+, hopefully
+                self.notify()
             else:
                 # Maybe Nathan coded other callbacks idk
                 print(s)
+
+    def notify(self):
+        time.sleep(1/60)
+        # dirty hack to drop at most one frame at 60 fps
+        if self.busy:
+            # self.done_notification.close()
+            pass
+        else:
+            if not self.window.is_active():
+                self.done_notification.update("Computation Finished",
+                                              "Evaluation of cell in %s complete"\
+                                              % os.path.basename(self.file))
+                self.done_notification.show()
+
 
     def clear_output(self, *_):
         """
