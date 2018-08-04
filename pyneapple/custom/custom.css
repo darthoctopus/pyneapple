@@ -7,10 +7,10 @@ div#header-container {
 /*
  hide the mouse thing to prevent accidental running
  */
-div.code_cell:hover .run_this_cell {
+div.code_cell .run_this_cell {
     visibility: hidden !important;
 }
-div.code_cell:hover div.input_prompt.run_this_cell {
+div.code_cell div.input_prompt.run_this_cell {
     visibility: hidden !important;
 }
 div.code_cell div.input_prompt {
