@@ -34,7 +34,8 @@ from .config import config
 gi.require_version('Gtk', '3.0')
 gi.require_version('Notify', '0.7')
 from gi.repository import Gio, Gtk, GLib, Notify
-from .platform import WebView, platformat, SYSTEM, open_term
+from .platform import WebView, platformat, SYSTEM,\
+                      open_term, open_folder
 
 get_name = Gtk.Buildable.get_name
 dialog_flags = (Gtk.DialogFlags.MODAL|

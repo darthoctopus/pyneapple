@@ -17,16 +17,6 @@
                     <attribute name="accel">&lt;Primary&gt;o</attribute>
                 </item>
                 <item>
-                    <attribute name="label">Open Terminal</attribute>
-                    <attribute name="action">win.open-terminal</attribute>
-                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;t</attribute>
-                </item>
-                <item>
-                    <attribute name="label">Open Containing Folder</attribute>
-                    <attribute name="action">win.open-folder</attribute>
-                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;e</attribute>
-                </item>
-                <item>
                     <attribute name="target">save_checkpoint</attribute>
                     <attribute name="label">Save</attribute>
                     <attribute name="action">win.jupyter-click-menu</attribute>
@@ -39,6 +29,16 @@
                 </item>
             </section>
             <section>
+                <item>
+                    <attribute name="label">Open Terminal</attribute>
+                    <attribute name="action">win.open-terminal</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;t</attribute>
+                </item>
+                <item>
+                    <attribute name="label">Open Containing Folder</attribute>
+                    <attribute name="action">win.open-folder</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;e</attribute>
+                </item>
                 <submenu>
                     <attribute name="label">Export as</attribute>
                     <item>
