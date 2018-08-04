@@ -3,3 +3,20 @@ div#menubar-container,
 div#header-container {
   display: none !important;
 }
+
+/*
+ hide the mouse thing to prevent accidental running
+ */
+div.code_cell:hover .run_this_cell {
+    visibility: hidden !important;
+}
+div.code_cell:hover div.input_prompt.run_this_cell {
+    visibility: hidden !important;
+}
+div.code_cell div.input_prompt {
+    min-width: 0;
+}
+.run_this_cell {
+    padding: 0 !important;
+    width: 0 !important;
+} 
