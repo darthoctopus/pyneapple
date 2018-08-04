@@ -554,8 +554,7 @@ class JupyterWindow(object):
         time.sleep(1/60)
         # dirty hack to drop at most one frame at 60 fps
         if self.busy:
-            # self.done_notification.close()
-            pass
+            self.done_notification.close()
         else:
             if not self.window.is_active():
                 self.done_notification.update("Computation Finished",
