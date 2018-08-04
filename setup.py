@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 setup(
     name="pyneapple",
-    version="0.2",
+    version="0.3",
     packages=find_packages(),
     scripts=['scripts/pyneapple'],
 
@@ -20,5 +20,5 @@ setup(
     description="GTK Editor for Jupyter Notebooks",
     license="GPLv3",
     keywords="jupyter notebook GTK",
-    url="http://github.com/darthoctopus/pyneapple"
+    url="http://gitlab.com/darthoctopus/pyneapple"
 )
