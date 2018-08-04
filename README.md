@@ -11,13 +11,19 @@ This was my winter break project of 2017/2018, and I may not be able to update i
 
 ## Requirements
 
-I wrote this with GObject introspection and it uses a WebKit2 webview to access Jupyter notebooks proper. As far as I know these (via [PyGObject](http://pygobject.readthedocs.io/en/latest/getting_started.html)) are the only requirements. I've also updated some of Nathan's scripts to use Promises, which are only implemented in Jupyter 5.1 and above.
+I wrote this with GObject introspection and it uses a WebKit2 webview to access Jupyter notebooks proper. I also use `setproctitle` to keep things tidy (particularly for GTK `RecentManager` bookkeeping). As far as I know these (via [PyGObject](http://pygobject.readthedocs.io/en/latest/getting_started.html)) are the only requirements. I've also updated some of Nathan's scripts to use Promises, which are only implemented in Jupyter 5.1 and above.
 
 ## Running
 
-Install this with
+Install this with either
 
-```python
+```bash
+$pip install pyneapple
+```
+
+or
+
+```bash
 python3 setup.py build
 python3 setup.py install
 ```

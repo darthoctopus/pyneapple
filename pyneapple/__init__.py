@@ -32,7 +32,8 @@ from notebook.notebookapp import NotebookApp
 import gi
 from .config import config
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gio, Gtk, GLib
+gi.require_version('Notify', '0.7')
+from gi.repository import Gio, Gtk, GLib, Notify
 from .platform import WebView, platformat, SYSTEM
 
 get_name = Gtk.Buildable.get_name
@@ -102,6 +103,8 @@ WHERE_AM_I = os.path.abspath(os.path.dirname(__file__))
 CALLBACK_PREFIX = "$$$$"
 CALLBACK_SEPARATOR = "|"
 
+Notify.init("Pyneapple")
+
 class JupyterWindow(object):
     """
     Simple WebBrowser class.
@@ -112,7 +115,7 @@ class JupyterWindow(object):
 
     def __init__(self, app, file):
         """
-        Build GUI
+        Initialisation of app window
         """
 
         builder = Gtk.Builder()
@@ -176,7 +179,15 @@ class JupyterWindow(object):
         for i in ["change_kernel", "set_theme"]:
             eval(f"self.action_hack('{i}', self.{i}, True, True)")
 
+        self.done_notification = Notify.Notification.new('Computation finished', '')
+
     def action_hack(self, name, method, param=False, stateful=False):
+        """
+        catch-all hack to create Gio actions for GtkApplicationMenu.
+        One wonders why we can't just have activate signals,
+        like with GtkMenu, or reserved function names, like with
+        GtkApplication.
+        """
         name = name.replace('_', '-')
         if param:
             if stateful:
@@ -189,9 +200,15 @@ class JupyterWindow(object):
         self.window.add_action(q)
 
     def quit(self, *_):
+        """
+        Self-explanatory
+        """
         self.app.quit()
 
     def close(self, *_):
+        """
+        I've implemented Nathan's autosave here
+        """
         if not self.ready:
             return False
 
@@ -217,6 +234,9 @@ class JupyterWindow(object):
         return True
 
     def error(self, message, message2):
+        """
+        Error message (if ever needed)
+        """
         dialog = Gtk.MessageDialog(self.window, 0, Gtk.MessageType.ERROR,
                                    Gtk.ButtonsType.CANCEL,
                                    str(message), flags=dialog_flags)
@@ -227,6 +247,9 @@ class JupyterWindow(object):
         dialog.destroy()
 
     def open(self, *_):
+        """
+        Open a file with GTK FileChooserDialog
+        """
         dialog = Gtk.FileChooserDialog("Please choose a file", self.window,
                                        Gtk.FileChooserAction.OPEN,
                                        (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
@@ -241,10 +264,17 @@ class JupyterWindow(object):
         dialog.destroy()
 
     def reset(self, *_):
+        """
+        Refresh webview (in case of Bad Things happening,
+        e.g. accidentally navigating with a hyperlink)
+        """
         self.load_uri("http://localhost:{}/notebooks{}".
                       format(self.app.server.port, platformat(self.file)))
 
     def save_as(self, *_):
+        """
+        Save As with file chooser
+        """
         self.jupyter_click_run('save_checkpoint')
         dialog = Gtk.FileChooserDialog("Please choose a location to save the file", self.window,
                                        Gtk.FileChooserAction.SAVE,
@@ -270,9 +300,16 @@ class JupyterWindow(object):
         dialog.destroy()
 
     def print_dialog(self, *_):
+        """
+        Print with webview's built-in capabilities
+        n.b. the resulting PDFs will be styled with the current theme
+        """
         self.webview.run_javascript("window.print()")
 
     def export(self, __, f):
+        """
+        Exporting requires nbconvert (and by extension pandoc)
+        """
         fmt = _(f)
         uri = "http://localhost:{}/nbconvert/{}{}?token={}".\
             format(self.app.server.port, fmt,
@@ -312,6 +349,9 @@ class JupyterWindow(object):
         self.load_event(ev)
 
     def load_event(self, ev):
+        """
+        aka onLoad()
+        """
         if 'WEBKIT_LOAD_COMMITTED' in ev:
             self.set_title("Pyneapple: "+ os.path.basename(self.file),
                            os.path.normpath(self.file))
@@ -336,6 +376,10 @@ class JupyterWindow(object):
         return
 
     def zoom(self, __, level):
+        """
+        Set WebView zoomlevel
+        per documentation, supply a scale factor (default 1)
+        """
         name = _(level)
         #print("self.webview.{}()".format(name))
         if name == "zoom_in":
@@ -346,6 +390,9 @@ class JupyterWindow(object):
             self.webview.set_zoom_level(1)
 
     def toggle_csd(self, *_):
+        """
+        n.b. this causes window to lose decorations if CSD is actually used
+        """
         self.headerbar.set_visible(not self.headerbar.get_visible())
 
     def jupyter_click(self, widget, *_):
@@ -353,23 +400,30 @@ class JupyterWindow(object):
         Emulate a click on the Jupyter menu
         if suffix _toolbar is present, we strip it first
         """
-
         widget_id = get_name(widget)
         if widget_id[-len('_toolbar'):] == '_toolbar':
             widget_id = widget_id[:-len('_toolbar')]
         self.jupyter_click_run(widget_id)
 
     def jupyter_click_menu(self, __, name):
-
+        """
+        Same deal but through a GtkAction rather than activate signal
+        """
         widget_id = _(name)
         self.jupyter_click_run(widget_id)
 
     def jupyter_click_run(self, name):
+        """
+        Actual javascript invocation
+        """
         self.webview.run_javascript("Jupyter.menubar.element.find('#%s').click(); true" % name)
 
     # Some of Nathan's utility functions are implemented here.
 
     def button(self, __, target):
+        """
+        Sets button-type of cell using buttons nbextension
+        """
         button_type = _(target)[len('button_'):]
         if button_type == "'unset'":
             button_type = 'false'
@@ -378,9 +432,15 @@ class JupyterWindow(object):
                                     % button_type)
 
     def toggle_readonly(self, *_):
+        """
+        Toggles cell readonly property using readonly nbextension
+        """
         self.webview.run_javascript("require('custom/custom').toggleReadOnly();")
 
     def set_theme(self, *args):
+        """
+        Sets theme using themes nbextension
+        """
         theme = "/custom/{}.css".format(_(args[-1]))
         if theme[-8:-4] == "none":
             theme = "#"
@@ -393,7 +453,10 @@ class JupyterWindow(object):
         except:
             pass
 
-    def change_kernel(self, __, name):
+    def change_kernel(self, action, name):
+        """
+        Changes kernel
+        """
         kernel = _(name)
         self.webview.run_javascript("Jupyter.notebook.kernel_selector.set_kernel('%s');" % kernel)
         action.set_state(name)
@@ -415,6 +478,9 @@ class JupyterWindow(object):
     # a callback scheme using the page title as a message-passing interface.
 
     def titlechanged(self, *__):
+        """
+        Callback system using window title as MPI
+        """
         s = self.webview.get_title()
         if s is not None and s.startswith(CALLBACK_PREFIX):
             num, contents = s[len(CALLBACK_PREFIX):].split(CALLBACK_SEPARATOR)
@@ -458,6 +524,14 @@ class JupyterWindow(object):
                 self.set_title("Pyneapple: %s%s"
                                %  (os.path.basename(self.file),
                                    " (busy)" if busy else ""))
+                if busy:
+                    self.done_notification.close()
+                else:
+                    if not self.window.is_active():
+                        self.done_notification.update("Computation Finished",
+                                                      "Evaluation of cell in %s complete"\
+                                                      % os.path.basename(self.file))
+                        self.done_notification.show()
             else:
                 # Maybe Nathan coded other callbacks idk
                 print(s)
@@ -479,6 +553,9 @@ class PyneappleServer(object):
         self.token = md5(str(time.time()))
 
     def run(self):
+        """
+        Run the Jupyter server with configuration options
+        """
 
         # Always serve from root
         sys.argv = [sys.executable, '--port={}'.format(self.port), '/']
@@ -511,6 +588,9 @@ class PyneappleServer(object):
         app.start()
 
 class Pyneapple(Gtk.Application):
+    """
+    Main application
+    """
     def __init__(self):
         super().__init__(application_id="org.pyneapple",
                          flags=Gio.ApplicationFlags.HANDLES_OPEN)
@@ -520,21 +600,35 @@ class Pyneapple(Gtk.Application):
         self.serverprocess = Process(target=self.server.run)
 
     def do_startup(self):
+        """
+        reserved method name for GtkApplication
+        connected to startup signal
+        """
         Gtk.Application.do_startup(self)
         argv = sys.argv
         self.serverprocess.start()
         sys.argv = argv
 
-        #hack
+        # hack — give some time for the server to start before
+        # opening the first webview. Otherwise we get
+        # a refused connection (and confused users?)
         time.sleep(1)
 
-        # Right now accels in menus are broken thanks to a Gtk bug
+        # Unfortunately, we now have one instance of
+        # Builder and get_object per instance of ApplicationWindow
+        # and ALSO for the parent Application, all in the name
+        # of scoping the kernel-busy indicators to the respective
+        # windows.
         builder = Gtk.Builder()
         self.go = builder.get_object
         builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'menu.ui'))
         self.set_menubar(builder.get_object("menubar"))
 
     def do_activate(self):
+        """
+        reserved method name for GtkApplication
+        connected to activate signal (i.e. launching/raising)
+        """
         Gtk.Application.do_activate(self)
         if not self.windows:
             # check to see if we have opened a file recently
@@ -556,6 +650,9 @@ class Pyneapple(Gtk.Application):
                 self.new_ipynb()
 
     def new_ipynb(self):
+        """
+        Make a new ipynb, and then instantiate a window for it.
+        """
         tmp = os.path.expanduser(config.get('TmpDir'))
         while os.path.exists(os.path.join(tmp,
                                           "Untitled %d.ipynb" % self.highest_untitled)):
@@ -570,17 +667,28 @@ class Pyneapple(Gtk.Application):
         self.highest_untitled += 1
 
     def open_filename(self, filename):
+        """
+        Instantiate window for existing ipynb
+        """
         if filename not in self.windows:
             self.windows[filename] = JupyterWindow(self, filename)
         else:
             self.windows[filename].window.present()
 
     def do_open(self, files, *_):
+        """
+        reserved method name for GtkApplication
+        connected to file-open signal
+        """
         for file in files:
             filepath = file.get_path()
             if filepath[-6:] == ".ipynb":
                 self.open_filename(filepath)
 
     def do_shutdown(self):
+        """
+        reserved method name for GtkApplication
+        connected to shutdown (i.e. app quit) signal
+        """
         Gtk.Application.do_shutdown(self)
         self.serverprocess.terminate()
