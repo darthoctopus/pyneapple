@@ -11,13 +11,16 @@ setup(
         'pyneapple': ['data/*', 'custom/*', 'custom/*/*'],
     },
 
-    data_files = [
+    data_files=[
         ('share/applications', ['extras/pyneapple.desktop'])],
 
     # metadata for upload to PyPI
     author="Joel Ong",
     author_email="joel.ong@yale.edu",
-    description="GTK Editor for Jupyter Notebooks",
+    description="GTK3 Editor for Jupyter Notebooks",
+    long_description='''Pyneapple is a GTK3-based editor for Jupyter notebooks,
+    intended to improve quality of life for GUI use on the desktop
+    (as opposed to browser-based use).''',
     license="GPLv3",
     keywords="jupyter notebook GTK",
     url="http://gitlab.com/darthoctopus/pyneapple"
