@@ -146,8 +146,9 @@ class JupyterWindow(object):
 
         # Create WebView
         self.webview = WebView()
-        scrolled = self.go('scrolled')
-        scrolled.add_with_viewport(self.webview)
+        self.go('scrolled').add(self.webview)
+        props = self.go('scrolled').get_children()[0].props
+        props.shadow_type = Gtk.ShadowType.NONE
 
         # Connect signals
         builder.connect_signals(self)
@@ -554,7 +555,8 @@ class JupyterWindow(object):
         time.sleep(1/60)
         # dirty hack to drop at most one frame at 60 fps
         if self.busy:
-            self.done_notification.close()
+            # self.done_notification.close()
+            pass
         else:
             if not self.window.is_active():
                 self.done_notification.update("Computation Finished",
