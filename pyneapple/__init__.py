@@ -174,11 +174,11 @@ class JupyterWindow(object):
         # boilerplate for the sake of it woo
 
         for i in ["close", "quit", "open", "save_as", "print_dialog", "reset",
-                  "clear_output", "toggle_csd", "toggle_readonly", "new",
+                  "clear_output", "toggle_csd", "new",
                   "open_terminal", "open_folder"]:
             eval(f"self.action_hack('{i}', self.{i})")
 
-        for i in ["jupyter_click_menu", "zoom", "button", "export"]:
+        for i in ["jupyter_click_menu", "zoom", "export"]:
             eval(f"self.action_hack('{i}', self.{i}, True)")
 
         for i in ["change_kernel", "set_theme"]:
@@ -441,29 +441,12 @@ class JupyterWindow(object):
 
     # Some of Nathan's utility functions are implemented here.
 
-    def button(self, __, target):
-        """
-        Sets button-type of cell using buttons nbextension
-        """
-        button_type = _(target)[len('button_'):]
-        if button_type == "'unset'":
-            button_type = 'false'
-
-        self.webview.run_javascript("require('custom/custom').setSelectionButton(%s);" \
-                                    % button_type)
-
-    def toggle_readonly(self, *_):
-        """
-        Toggles cell readonly property using readonly nbextension
-        """
-        self.webview.run_javascript("require('custom/custom').toggleReadOnly();")
-
     def set_theme(self, *args):
         """
         Sets theme using themes nbextension
         """
-        theme = "/custom/{}.css".format(_(args[-1]))
-        if theme[-8:-4] == "none":
+        theme = "/custom/themes/{}.css".format(_(args[-1]))
+        if theme[:-4] == "none":
             theme = "#"
 
         self.webview.run_javascript("""global_start_theme="{}";

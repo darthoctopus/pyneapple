@@ -209,33 +209,6 @@
             </section>
             <section>
                 <item>
-                    <attribute name="label">Toggle Read-Only</attribute>
-                    <attribute name="action">win.toggle-readonly</attribute>
-                </item>
-                <submenu>
-                    <attribute name="label">Show As Button</attribute>
-                    <item>
-                        <attribute name="target">button_run</attribute>
-                        <attribute name="label">Run Button</attribute>
-                        <attribute name="action">win.button</attribute>
-                    </item>
-                    <item>
-                        <attribute name="target">button_submit</attribute>
-                        <attribute name="label">Submit Button</attribute>
-                        <attribute name="action">win.button</attribute>
-                    </item>
-                    <item>
-                        <attribute name="target">button_none</attribute>
-                        <attribute name="label">Invisible</attribute>
-                        <attribute name="action">win.button</attribute>
-                    </item>
-                    <item>
-                        <attribute name="target">button_unset</attribute>
-                        <attribute name="label">None</attribute>
-                        <attribute name="action">win.button</attribute>
-                    </item>
-                </submenu>
-                <item>
                     <attribute name="label">Clear Output</attribute>
                     <attribute name="action">win.clear-output</attribute>
                 </item>
@@ -273,27 +246,27 @@
                     <attribute name="label">Theme</attribute>
                     <section>
                         <item>
-                            <attribute name="target">theme-none</attribute>
+                            <attribute name="target">none</attribute>
                             <attribute name="label">None</attribute>
                             <attribute name="action">win.set-theme</attribute>
                         </item>
                         <item>
-                            <attribute name="target">theme-light</attribute>
+                            <attribute name="target">light</attribute>
                             <attribute name="label">Light</attribute>
                             <attribute name="action">win.set-theme</attribute>
                         </item>
                         <item>
-                            <attribute name="target">theme-dark</attribute>
+                            <attribute name="target">dark</attribute>
                             <attribute name="label">Dark</attribute>
                             <attribute name="action">win.set-theme</attribute>
                         </item>
                         <item>
-                            <attribute name="target">theme-borlandia</attribute>
+                            <attribute name="target">borlandia</attribute>
                             <attribute name="label">Borlandia</attribute>
                             <attribute name="action">win.set-theme</attribute>
                         </item>
                         <item>
-                            <attribute name="target">theme-red</attribute>
+                            <attribute name="target">red</attribute>
                             <attribute name="label">Red</attribute>
                             <attribute name="action">win.set-theme</attribute>
                         </item>

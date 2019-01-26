@@ -10,10 +10,7 @@ define([
     'notebook/js/notebook',
     'notebook/js/cell',
     'custom/nbextensions/theme',
-    'custom/nbextensions/readonly',
-    'custom/nbextensions/button',
-    'custom/nbextensions/tabs',
-], function(Jupyter, events, promises, notebook, cell, theme, readOnly, button, tabs) {
+], function(Jupyter, events, promises, notebook, cell, theme) {
 
     /// Register permanent events
     var flash = function(txt) {
@@ -59,8 +56,5 @@ define([
 
     return {
         set_theme: theme.set_theme,
-        toggleReadOnly: readOnly.toggleReadOnly,
-        setSelectionButton: button.setSelectionButton,
-        toggleSheetNew: tabs.toggleSheetNew
     };
 });
