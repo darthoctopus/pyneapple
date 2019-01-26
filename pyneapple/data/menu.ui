@@ -256,8 +256,18 @@
                             <attribute name="action">win.set-theme</attribute>
                         </item>
                         <item>
+                            <attribute name="target">grade3</attribute>
+                            <attribute name="label">Grade3</attribute>
+                            <attribute name="action">win.set-theme</attribute>
+                        </item>
+                        <item>
                             <attribute name="target">dark</attribute>
                             <attribute name="label">Dark</attribute>
+                            <attribute name="action">win.set-theme</attribute>
+                        </item>
+                        <item>
+                            <attribute name="target">onedork</attribute>
+                            <attribute name="label">OneDork</attribute>
                             <attribute name="action">win.set-theme</attribute>
                         </item>
                         <item>
