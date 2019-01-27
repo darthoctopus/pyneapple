@@ -174,7 +174,7 @@ class JupyterWindow(object):
         # boilerplate for the sake of it woo
 
         for i in ["close", "quit", "open", "save_as", "print_dialog", "reset",
-                  "clear_output", "toggle_csd", "new",
+                  "clear_output", "toggle_csd", "new", "prefs",
                   "open_terminal", "open_folder"]:
             eval(f"self.action_hack('{i}', self.{i})")
 
@@ -203,6 +203,9 @@ class JupyterWindow(object):
             q = Gio.SimpleAction.new(name, None)
         q.connect("activate", method)
         self.window.add_action(q)
+
+    def prefs(self, *_):
+        self.app.prefs()
 
     def quit(self, *_):
         """
@@ -554,6 +557,36 @@ class JupyterWindow(object):
         """
         self.webview.run_javascript("require('base/js/namespace').notebook.clear_output();")
 
+class ChromelessWindow(object):
+    """
+    general-purpose simple webview with no chrome or navigational controls.
+    """
+
+    def __init__(self, title, uri):
+        """
+        Build GUI
+        """
+
+        builder = Gtk.Builder()
+        builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'prefs.ui'))
+        go = builder.get_object
+        window = go('window')
+        scrolled = go('scrolled')
+
+        # Create WebView
+        webview = WebView()
+        scrolled.add(webview)
+        builder.connect_signals(self)
+        window.connect('delete-event', self.cleanup)
+        window.set_title (title)
+
+        # Everything is ready
+        webview.load_uri(uri)
+        window.show_all()
+
+    def cleanup(self, *_):
+        del self
+
 
 class PyneappleServer(object):
     """
@@ -677,6 +710,10 @@ class Pyneapple(Gtk.Application):
 
         self.open_filename(fn)
         self.highest_untitled += 1
+
+    def prefs(self):
+        w = ChromelessWindow("Notebook Extension Preferences", f"http://localhost:{self.server.port}/nbextensions?token={self.server.token}")
+        return w
 
     def open_filename(self, filename):
         """

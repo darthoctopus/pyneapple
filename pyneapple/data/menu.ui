@@ -154,6 +154,12 @@
                     <attribute name="accel">&lt;Primary&gt;&lt;Shift&gt;Down</attribute>
                 </item>
             </section>
+            <section>
+                <item>
+                    <attribute name="label">Preferences</attribute>
+                    <attribute name="action">win.prefs</attribute>
+                </item>
+            </section>
         </submenu>
         <submenu>
             <attribute name="label">_Cell</attribute>
