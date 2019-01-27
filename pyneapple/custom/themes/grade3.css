@@ -10,8 +10,7 @@ div#notebook-container {
 
 div#notebook {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- font-size: 13pt;
- line-height: 170%;
+ font-size: 12pt;
  color: #303030;
  -webkit-font-smoothing: antialiased !important;
  padding-top: 25px !important;
@@ -19,7 +18,7 @@ div#notebook {
 body,
 div.body {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- font-size: 13pt;
+ font-size: 12pt;
  color: #303030;
  background-color: #ffffff;
  background: #ffffff;
@@ -256,14 +255,14 @@ body > #header {
  z-index: 100;
 }
 .list_container {
- font-size: 13pt;
+ font-size: 12pt;
  color: #303030;
  border: none;
  text-shadow: none !important;
 }
 .list_container > div {
  border-bottom: 1px solid rgba(180,180,180,.14);
- font-size: 13pt;
+ font-size: 12pt;
 }
 .list_header > div,
 .list_item > div {
@@ -276,11 +275,11 @@ body > #header {
  margin-left: -1px;
  vertical-align: middle;
  line-height: 22px;
- font-size: 13pt;
+ font-size: 12pt;
 }
 .item_icon {
  color: #126dce;
- font-size: 13pt;
+ font-size: 12pt;
  vertical-align: middle;
 }
 .list_item input:not([type="checkbox"]) {
@@ -456,7 +455,7 @@ ul#tabs a {
 }
 div#notebook {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- font-size: 13pt;
+ font-size: 12pt;
  padding-top: 4px;
 }
 .notebook_app {
@@ -494,7 +493,7 @@ div#header-container {
 #header,
 .edit_app #header {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- font-size: 13pt;
+ font-size: 12pt;
  box-shadow: none;
  background-color: #ffffff;
 }
@@ -536,7 +535,7 @@ p.navbar-text.indicator_area {
 }
 .navbar-default {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- font-size: 13pt;
+ font-size: 12pt;
  background-color: #ffffff;
  border-color: #d4d4d4;
  line-height: 1.5em;
@@ -544,7 +543,7 @@ p.navbar-text.indicator_area {
 }
 .navbar-default .navbar-nav > li > a {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- font-size: 13pt;
+ font-size: 12pt;
  color: #303030;
  display: block;
  line-height: 1.5em;
@@ -640,7 +639,7 @@ div.notification_widget.info,
  color: #126dce;
 }
 .item_buttons .kernel-name {
- font-size: 13pt;
+ font-size: 12pt;
  color: #126dce;
 }
 .running_notebook_icon:before {
@@ -818,7 +817,7 @@ i.fa.fa-icon {
 }
 .dropdown-menu {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- font-size: 13pt;
+ font-size: 12pt;
  box-shadow: none;
  padding: 0px;
  text-align: left;
@@ -829,7 +828,7 @@ i.fa.fa-icon {
 }
 .dropdown-menu:hover {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- font-size: 13pt;
+ font-size: 12pt;
  box-shadow: none;
  padding: 0px;
  text-align: left;
@@ -988,7 +987,7 @@ div.kse-dropdown > .dropdown-menu,
 .item_buttons > .btn,
 .item_buttons > .btn-group,
 .item_buttons > .input-group {
- font-size: 13pt;
+ font-size: 12pt;
  background: transparent;
  background-color: transparent;
  border: 0px solid #e4e4e4;
@@ -1111,7 +1110,7 @@ div.dynamic-buttons > button,
 }
 .dropdown-header {
  font-family: sans-serif !important;
- font-size: 13pt !important;
+ font-size: 12pt !important;
  color: #ff7823 !important;
  border-bottom: none !important;
  padding: 0px !important;
@@ -1175,7 +1174,7 @@ fieldset[disabled] .btn-default.focus {
 }
 .input-group-addon {
  padding: 2px 5px;
- font-size: 13pt;
+ font-size: 12pt;
  font-weight: normal;
  height: auto;
  color: #303030;
@@ -1266,7 +1265,7 @@ div.modal-footer > button:hover {
 }
 .modal-header {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- font-size: 13pt;
+ font-size: 12pt;
  color: #303030;
  background: #e4e4e4;
  background-color: #e4e4e4;
@@ -1310,7 +1309,7 @@ div.panel-default,
 .panel,
 .panel-default {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- font-size: 13pt;
+ font-size: 12pt;
  background-color: #f4f4f4;
  color: #303030;
  margin-bottom: 14px;
@@ -1369,7 +1368,7 @@ textarea {
 }
 select.form-control.select-xs {
  height: 33px;
- font-size: 13pt;
+ font-size: 12pt;
 }
 .toolbar select,
 .toolbar label {
@@ -1605,7 +1604,6 @@ div.prompt,
  font-size: 9pt !important;
  font-weight: normal;
  color: #828892;
- line-height: 170%;
  padding: 0px;
  padding-top: 4px;
  padding-left: 0px;
@@ -1690,8 +1688,6 @@ div.output_wrapper {
 div.output_subarea.output_text.output_stream.output_stdout,
 div.output_subarea.output_text {
  font-family: "Fira Code", "Consolas", "Lucida Console", monospace;
- font-size: 8.5pt !important;
- line-height: 150% !important;
  background-color: #ffffff;
  color: #303030;
  border-top-right-radius: 0px;
@@ -1700,8 +1696,6 @@ div.output_subarea.output_text {
 }
 div.output_area pre {
  font-family: "Fira Code", "Consolas", "Lucida Console", monospace;
- font-size: 8.5pt !important;
- line-height: 151% !important;
  color: #303030;
  border-top-right-radius: 0px;
  border-top-left-radius: 0px;
@@ -1711,7 +1705,6 @@ div.output_area {
 }
 div.output_html {
  font-family: "Fira Code", "Consolas", "Lucida Console", monospace;
- font-size: 8.5pt;
  color: #353535;
  background-color: #ffffff;
  background: #ffffff;
@@ -1793,7 +1786,7 @@ div.text_cell,
 div.text_cell_render pre,
 div.text_cell_render {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- font-size: 13pt;
+ font-size: 12pt;
  line-height: 130% !important;
  color: #353535;
  background: #ffffff;
@@ -1820,32 +1813,27 @@ div.cell.text_cell.rendered div.input_area {
 }
 div.cell.text_cell .CodeMirror,
 div.cell.text_cell .CodeMirror pre {
- line-height: 170% !important;
 }
 div.cell.text_cell.rendered.selected {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- line-height: 170% !important;
  background: #ffffff;
  background-color: #ffffff;
  border-radius: 0px;
 }
 div.cell.text_cell.unrendered.selected {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- line-height: 170% !important;
  background: #ffffff;
  background-color: #ffffff;
  border-radius: 0px;
 }
 div.cell.text_cell.selected {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- line-height: 170% !important;
  background: #ffffff;
  background-color: #ffffff;
  border-radius: 0px;
 }
 .edit_mode div.cell.text_cell.selected {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- line-height: 170% !important;
  background: #ffffff;
  background-color: #ffffff;
  border-radius: 0px;
@@ -1854,7 +1842,6 @@ div.text_cell.unrendered,
 div.text_cell.unrendered.selected,
 div.edit_mode div.text_cell.unrendered {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- line-height: 170% !important;
  background: #ffffff;
  background-color: #ffffff;
  border-radius: 0px;
@@ -1922,7 +1909,6 @@ samp {
 code {
  font-family: "Fira Code", "Consolas", "Lucida Console", monospace;
  font-size: 11pt !important;
- line-height: 170% !important;
  color: #353535;
  background: #efefef;
  background-color: #efefef;
@@ -1962,7 +1948,6 @@ div.rendered_html {
 div.rendered_html pre {
  font-family: "Fira Code", "Consolas", "Lucida Console", monospace;
  font-size: 11pt !important;
- line-height: 170% !important;
  color: #353535 !important;
  background: #efefef;
  background-color: #efefef;
@@ -1978,7 +1963,6 @@ div.text_cell_render pre,
 div.text_cell_render code {
  font-family: "Fira Code", "Consolas", "Lucida Console", monospace;
  font-size: 11pt !important;
- line-height: 170% !important;
  color: #353535;
  background: #ffffff;
  background-color: #ffffff;
@@ -2644,7 +2628,7 @@ body > div.modal.cmd-palette.typeahead-field {
 .typeahead-dropdown,
 .typeahead-list {
  font-family: "Latin Modern Sans", "Linux Biolinum", "Myriad Pro", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
- font-size: 13pt;
+ font-size: 12pt;
  color: #303030;
  background-color: #ffffff;
  border: none;
@@ -2793,7 +2777,6 @@ div#short-key-bindings-intro.well,
 .terminal-app .terminal {
  font-family: "Fira Code", "Consolas", "Lucida Console", monospace;
  font-size: 11pt;
- line-height: 170%;
  color: #303030;
  background: #ededed;
  padding: 0.4em;
@@ -2909,7 +2892,6 @@ div.CodeMirror,
 div.CodeMirror pre {
  font-family: "Fira Code", "Consolas", "Lucida Console", monospace;
  font-size: 11pt;
- line-height: 170%;
  color: #303030;
 }
 div.CodeMirror-lines {
@@ -2971,7 +2953,6 @@ div.js-error {
 .ipython_tooltip {
  font-family: "Fira Code", "Consolas", "Lucida Console", monospace;
  font-size: 11pt;
- line-height: 170%;
  border: 2px solid #dadada;
  background: #eeeeee;
  background-color: #eeeeee;
@@ -2985,7 +2966,6 @@ div.js-error {
 .ipython_tooltip .tooltiptext pre {
  font-family: "Fira Code", "Consolas", "Lucida Console", monospace;
  font-size: 11pt;
- line-height: 170%;
  background: #eeeeee;
  background-color: #eeeeee;
  color: #303030;
@@ -3028,23 +3008,12 @@ div.tooltiptext.bigtooltip {
  background: #e0e1e3;
  border: none;
  border-radius: 0px;
- width: 36px;
 }
 .cm-s-ipython .CodeMirror-linenumber {
  color: #828892;
 }
 .CodeMirror-sizer {
  margin-left: 40px;
-}
-.CodeMirror-linenumber,
-div.CodeMirror-linenumber,
-.CodeMirror-gutter.CodeMirror-linenumberdiv.CodeMirror-gutter.CodeMirror-linenumber {
- padding-right: 1px;
- margin-left: 0px;
- margin: 0px;
- width: 26px !important;
- padding: 0px;
- text-align: right;
 }
 .CodeMirror-linenumber {
  color: #828892;
