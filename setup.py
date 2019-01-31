@@ -8,7 +8,7 @@ setup(
     install_requires=['notebook>=5.1', 'setproctitle'],
 
     package_data={
-        'pyneapple': ['data/*', 'custom/*', 'custom/*/*'],
+        'pyneapple': ['data/*', 'custom/*', 'custom/*/*', 'custom/*/*/*'],
     },
 
     data_files=[
