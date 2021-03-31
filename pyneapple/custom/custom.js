@@ -16,6 +16,7 @@ define([
     var flash = function(txt) {
         var old = document.title;
         document.title = txt;
+        sleep(1e-5)
         document.title = old;
     };
 

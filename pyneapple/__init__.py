@@ -211,7 +211,7 @@ class JupyterWindow(object):
         I've implemented Nathan's autosave here
         """
         if not self.ready:
-            return True
+            return False
 
             # This really should be part of a more general callback
             # handling scheme (much credit to N Whitehead)
@@ -221,11 +221,13 @@ class JupyterWindow(object):
                 var success = function(evt) {
                   var old = document.title;
                   document.title = "$$$$-2|1"
+                  sleep(1e-5)
                   document.title = old;
                 };
                 var failure = function(evt) {
                   var old = document.title;
                   document.title = "$$$$-2|0";
+                  sleep(1e-5)
                   document.title = old;
                 };
                 require('base/js/events').on("notebook_saved.Notebook", success);
@@ -233,11 +235,7 @@ class JupyterWindow(object):
         self.webview.run_javascript(ss)
         self.jupyter_click_run('save_checkpoint')
 
-        # need to give the server some time to respond to the save request
-        # before actually closing the window
-
-        time.sleep(1/10)
-        return False
+        return True
 
     def error(self, message, message2):
         """
@@ -516,11 +514,12 @@ class JupyterWindow(object):
 
             elif num == -2:
                 # final save on window closure
-                self.ready = False
-                self.window.close()
-                del self.app.windows[self.file]
-                del self
-                return
+                if int(contents):
+                    self.ready = False
+                    self.window.close()
+                    del self.app.windows[self.file]
+                    del self
+                    return
 
             elif num == -1:
                 # kernel busy indicator: "true" if busy and "false" otherwise
@@ -594,6 +593,7 @@ class PyneappleServer(object):
     def __init__(self):
         self.port = int("4" + str(time.time()).split('.')[-1][:4])
         self.token = md5(str(time.time()))
+        print(f"token: {self.token}")
 
     def run(self):
         """
