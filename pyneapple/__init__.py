@@ -232,6 +232,11 @@ class JupyterWindow(object):
                 }"""
         self.webview.run_javascript(ss)
         self.jupyter_click_run('save_checkpoint')
+
+        # need to give the server some time to respond to the save request
+        # before actually closing the window
+
+        time.sleep(1/10)
         return False
 
     def error(self, message, message2):
