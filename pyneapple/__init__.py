@@ -218,7 +218,7 @@ class JupyterWindow(object):
         I've implemented Nathan's autosave here
         """
         if not self.ready:
-            return False
+            return True
 
             # This really should be part of a more general callback
             # handling scheme (much credit to N Whitehead)
@@ -239,7 +239,7 @@ class JupyterWindow(object):
                 }"""
         self.webview.run_javascript(ss)
         self.jupyter_click_run('save_checkpoint')
-        return True
+        return False
 
     def error(self, message, message2):
         """
