@@ -1469,7 +1469,7 @@ a {
 div.input_area {
  background-color: #2c303c;
  background: #2c303c;
- padding-right: 1.2em;
+ padding-right: 0.5em;
  border: 0px;
  border-radius: 0px;
  border-top-right-radius: 4px;
@@ -2992,6 +2992,7 @@ div.tooltiptext.bigtooltip {
  border-radius: 2px;
  font-style: normal;
  font-weight: normal;
+ padding-right: 1.2em;
 }
 .cm-s-ipython div.CodeMirror-selected {
  background: #373d4b;
