@@ -195,16 +195,10 @@ class JupyterWindow:
 
         ss = """{
                 var success = function(evt) {
-                  var old = document.title;
-                  document.title = "$$$$-2|1"
-                  sleep(1e-5)
-                  document.title = old;
+                  require('custom/custom').flash("$$$$-2|1")
                 };
                 var failure = function(evt) {
-                  var old = document.title;
-                  document.title = "$$$$-2|0";
-                  sleep(1e-5)
-                  document.title = old;
+                  require('custom/custom').flash("$$$$-2|0")
                 };
                 require('base/js/events').on("notebook_saved.Notebook", success);
                 }"""
