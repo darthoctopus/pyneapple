@@ -34,3 +34,9 @@ def open_folder(path):
         os.system("explorer.exe \"%s\"" % path)
     elif SYSTEM == "Linux":
         os.system("xdg-open \"%s\"" % path)
+
+def open_uri(uri):
+    if SYSTEM == "Windows":
+        os.system(f"start {uri}")
+    elif SYSTEM == "Linux":
+        os.system(f"xdg-open {uri}")

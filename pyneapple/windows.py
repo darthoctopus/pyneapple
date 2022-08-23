@@ -31,7 +31,7 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('Notify', '0.7')
 from gi.repository import Gio, Gtk, GLib, Notify
 from .platform import WebView, platformat, SYSTEM,\
-                      open_term, open_folder
+                      open_term, open_folder, open_uri
 
 get_name = Gtk.Buildable.get_name
 dialog_flags = (Gtk.DialogFlags.MODAL|
@@ -171,7 +171,7 @@ class JupyterWindow:
         Generally we delegate this to xdg-open for all URI schemes.
         '''
 
-        os.system(f'xdg-open "{platformat(navigation.get_request().get_uri())}"')
+        open_uri(platformat(navigation.get_request().get_uri()))
 
     def prefs(self, *_):
         self.app.prefs()
