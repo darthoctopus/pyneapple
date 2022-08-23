@@ -118,6 +118,7 @@ class JupyterWindow:
             self.webview.connect('load_changed', self.load_changed_cb)
         self.webview.connect('notify::title', self.titlechanged)
         self.webview.connect('context-menu', lambda s, w, e, u: True)
+        self.webview.connect('create', self.navigate)
         self.window.connect('delete-event', self.close)
 
         # Everything is ready
@@ -162,6 +163,15 @@ class JupyterWindow:
             q = Gio.SimpleAction.new(name, None)
         q.connect("activate", method)
         self.window.add_action(q)
+
+    def navigate(self, webview, navigation, *args, **kwargs):
+        '''
+        Handle attempts to navigate to new URIs.
+
+        Generally we delegate this to xdg-open for all URI schemes.
+        '''
+
+        os.system(f'xdg-open "{platformat(navigation.get_request().get_uri())}"')
 
     def prefs(self, *_):
         self.app.prefs()

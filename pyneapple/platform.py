@@ -21,7 +21,7 @@ else:
     _platformat = lambda x: x
 
 def platformat(x):
-    return _platformat(x).replace('%', '%25').replace('?', '%3F')
+    return _platformat(x).replace('%', '%25').replace('?', '%3F').replace(' ', '%20')
 
 def open_term(path):
     if SYSTEM == "Windows":
