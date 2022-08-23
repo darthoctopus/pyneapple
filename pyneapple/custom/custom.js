@@ -12,14 +12,17 @@ define([
     'custom/nbextensions/theme',
 ], function(Jupyter, events, promises, notebook, cell, theme) {
 
+    var sleep = function (ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     /// Register permanent events
     var flash = function(txt) {
         var old = document.title;
         document.title = txt;
-        sleep(1e-5)
+        sleep(5)
         document.title = old;
     };
-
 
     var truncate = function(json) {
 	pool = {}
