@@ -171,7 +171,7 @@ class JupyterWindow:
         Generally we delegate this to xdg-open for all URI schemes.
         '''
 
-        open_uri(platformat(navigation.get_request().get_uri()))
+        open_uri(navigation.get_request().get_uri())
 
     def prefs(self, *_):
         self.app.prefs()
