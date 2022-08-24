@@ -8,3 +8,4 @@ Icon=pyneapple
 MimeType=application/x-ipynb+json;
 StartupNotify=true
 StartupWMClass=pyneapple
+MimeType=x-scheme-handler/pyneapple;
