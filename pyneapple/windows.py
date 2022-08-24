@@ -421,7 +421,7 @@ class JupyterWindow:
         Sets theme using themes nbextension
         """
         theme = "/custom/themes/{}.css".format(_(args[-1]))
-        if theme[:-4] == "none":
+        if _(args[-1]) == "none":
             theme = "#"
 
         self.webview.run_javascript("""global_start_theme="{}";
@@ -555,6 +555,18 @@ class JupyterRemoteWindow(JupyterWindow):
             for _ in ["menubar", "header"]:
                 self.webview.run_javascript(f"""document.getElementById("{_}-container").style.display = 'none'""")
 
+            # inject theme placeholder
+
+            self.webview.run_javascript(f"""
+                const theme_container = document.createElement("style");
+                theme_container.id = "theme_container"
+                document.head.append(theme_container)
+                """)
+
+            # set theme
+
+            self.set_theme(config.get('theme'))
+
             # inject custom JS 
 
             with open(os.path.join(WHERE_AM_I, 'custom', 'remote_custom.js'), 'r') as f:
@@ -565,6 +577,40 @@ class JupyterRemoteWindow(JupyterWindow):
     def __title__(self, *_):
 
         return f"Pyneapple: {self.uri.split('/')[-1].split('?')[0]}"
+
+    def set_theme(self, *args):
+        """
+        Sets theme by directly injecting into DOM
+        """
+
+        theme = _(args[-1])
+        if theme == 'none':
+            return
+        theme = f"custom/themes/{theme}.css"
+
+        with open(os.path.join(WHERE_AM_I, theme), 'r') as f:
+            css = f.read()
+
+        self.webview.run_javascript(f"""
+            document.getElementById("theme_container").innerText = '{css}'
+            """)
+
+        try:
+            args[0].set_state(args[1])
+        except:
+            pass
+
+    def notify(self):
+        time.sleep(1/60)
+        # dirty hack to drop at most one frame at 60 fps
+        if self.busy:
+            # self.done_notification.close()
+            pass
+        else:
+            if not self.window.is_active():
+                self.done_notification.update("Computation Finished",
+                                              "Evaluation of cell in remote notebook complete")
+                self.done_notification.show()
 
 
 class ChromelessWindow:
