@@ -28,7 +28,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gio, Gtk
 
 from .config import config
-from .windows import WHERE_AM_I, JupyterWindow, ChromelessWindow
+from .windows import WHERE_AM_I, JupyterWindow, JupyterRemoteWindow, ChromelessWindow
 from .servers import PyneappleLocalServer
 
 NEW = """{
@@ -153,14 +153,27 @@ class Pyneapple(Gtk.Application):
         else:
             self.windows[filename].window.present()
 
+    def open_uri(self, uri):
+        if uri not in self.windows:
+            if '/notebooks/' in uri:
+                self.windows[uri] = JupyterRemoteWindow(self, uri)
+            else:
+                self.windows[uri] = ChromelessWindow(f'Notebook Server: {uri.split("?")[0]}', uri, app=self)
+        else:
+            self.windows[uri].window.present()
+
     def do_open(self, files, *_):
         """
         reserved method name for GtkApplication
         connected to file-open signal
         """
+
         for file in files:
             filepath = file.get_path()
-            if filepath[-6:] == ".ipynb":
+            if filepath is None:
+                uri = file.get_uri().replace("pyneapple://", "http://")
+                self.open_uri(uri)
+            elif filepath[-6:] == ".ipynb":
                 self.open_filename(filepath)
 
     def do_shutdown(self):

@@ -74,6 +74,14 @@ class JupyterWindow:
     """
 
     def __init__(self, app, server, file):
+
+        self.app = app
+        self.server = server
+        self.file = file
+
+        self.init_ui(app)
+
+    def init_ui(self, app):
         """
         Initialisation of app window
         """
@@ -89,9 +97,6 @@ class JupyterWindow:
         else:
             builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'pyneapple.ui'))
 
-        self.app = app
-        self.server = server
-        self.file = file
         self.ready = False
         self.busy = False
 
@@ -122,8 +127,6 @@ class JupyterWindow:
         self.window.connect('delete-event', self.close)
 
         # Everything is ready
-        # self.load_uri(local_uri + 'home')
-        # print(app.server.port, file)
 
         self.reset()
         self.window.set_application(app)
@@ -440,6 +443,10 @@ class JupyterWindow:
     def new(self, *_):
         self.app.new_ipynb()
 
+    def __title__(self, *_):
+        return "Pyneapple: %s%s" %  (os.path.basename(self.file),
+                                   " (busy)" if self.busy else "")
+
 
     # def test_return(self, widget, user_data=None):
     #   print("test")
@@ -498,9 +505,7 @@ class JupyterWindow:
                 # kernel busy indicator: "true" if busy and "false" otherwise
                 self.busy = True if contents == "true" else False
                 self.go('interrupt_kernel_toolbar').set_sensitive(self.busy)
-                self.set_title("Pyneapple: %s%s"
-                               %  (os.path.basename(self.file),
-                                   " (busy)" if self.busy else ""))
+                self.set_title(self.__title__())
                 # # asyncio.run(self.notify()) in 3.7+, hopefully
                 self.notify()
             else:
@@ -527,20 +532,58 @@ class JupyterWindow:
         """
         self.webview.run_javascript("require('base/js/namespace').notebook.clear_output();")
 
+class JupyterRemoteWindow(JupyterWindow):
+    def __init__(self, app, uri):
+
+        self.app = app
+        self.uri = uri
+
+        self.init_ui(app)
+
+    def reset(self, *_):
+
+        self.load_uri(self.uri)
+
+    def load_event(self, ev):
+
+        if 'WEBKIT_LOAD_COMMITTED' in ev:
+            self.set_title(self.__title__(), f"Remote Notebook at {self.uri.split('?')[0]}")
+        elif 'WEBKIT_LOAD_FINISHED' in ev:
+
+            # inject custom css
+
+            for _ in ["menubar", "header"]:
+                self.webview.run_javascript(f"""document.getElementById("{_}-container").style.display = 'none'""")
+
+            # inject custom JS 
+
+            with open(os.path.join(WHERE_AM_I, 'custom', 'remote_custom.js'), 'r') as f:
+                custom_js = f.read()
+
+            self.webview.run_javascript(custom_js)
+
+    def __title__(self, *_):
+
+        return f"Pyneapple: {self.uri.split('/')[-1].split('?')[0]}"
+
+
 class ChromelessWindow:
     """
     general-purpose simple webview with no chrome or navigational controls.
     """
 
-    def __init__(self, title, uri):
+    def __init__(self, title, uri, app=None):
         """
         Build GUI
         """
+
+        self.app = app
 
         builder = Gtk.Builder()
         builder.add_from_file(os.path.join(WHERE_AM_I, 'data', 'prefs.ui'))
         go = builder.get_object
         window = go('window')
+        self.window = window
         scrolled = go('scrolled')
 
         # Create WebView
@@ -549,10 +592,27 @@ class ChromelessWindow:
         builder.connect_signals(self)
         window.connect('delete-event', self.cleanup)
         window.set_title (title)
+        webview.connect('create', self.navigate)
 
         # Everything is ready
+        if app is not None:
+            window.set_application(app)
         webview.load_uri(uri)
         window.show_all()
+
+    def navigate(self, webview, navigation, *args, **kwargs):
+            '''
+            Handle attempts to navigate to new URIs.
+
+            Generally we delegate this to xdg-open for all URI schemes.
+            '''
+
+            uri = navigation.get_request().get_uri()
+            print(uri)
+            if '/notebooks/' not in uri or self.app is None:
+                open_uri(uri)
+            else:
+                self.app.open_uri(uri)
 
     def cleanup(self, *_):
         del self
