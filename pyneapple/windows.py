@@ -245,7 +245,7 @@ class JupyterWindow:
         Open a terminal window in the directory of the file
         """
 
-        path = os.path.dirname(platformat(self.file))
+        path = os.path.dirname(self.file)
         open_term(path)
 
     def open_folder(self, *_):
@@ -253,7 +253,7 @@ class JupyterWindow:
         Open a file manager window in the directory of the file
         """
 
-        path = os.path.dirname(platformat(self.file))
+        path = os.path.dirname(self.file)
         open_folder(path)
 
     def reset(self, *_):
