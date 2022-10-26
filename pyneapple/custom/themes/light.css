@@ -348,3 +348,13 @@ div.rendered_html h1 {
 div.rendered_html h2 {
   font-family: "RobotoSlab";
 }
+div.output_subarea.output_text.output_stream.output_stdout,
+div.output_subarea.output_text, div.output_area pre, div.output_html,
+div.prompt.output_prompt, div.out_prompt_overlay.prompt,
+div.cell.text_cell.rendered .prompt, div.cell.text_cell.unrendered .prompt,
+div.rendered_html code, .well code,div.rendered_html pre,div.text_cell_render pre,
+div.text_cell_render code, code, input.raw_input, div.CodeMirror,
+div.CodeMirror pre, .ipython_tooltip, .ipython_tooltip .tooltiptext pre, .cm-s-ipython.CodeMirror,
+.completions select {
+	font-family: "Fira Code", "Consolas", "Lucida Console", monospace;
+}
