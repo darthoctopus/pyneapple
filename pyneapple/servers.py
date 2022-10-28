@@ -47,6 +47,11 @@ class PyneappleLocalServer(object):
 
         # Always serve from root
         sys.argv = [sys.executable, '--port={}'.format(self.port), '/']
+        # note: omitting this line and specifying the port and notebook_dir
+        # using properties of NotebookApp leads to open_browser = False
+        # not being respected. I have no idea why this is the case, and no
+        # time or patience to debug this.
+
         os.environ['JUPYTER_CONFIG_DIR'] = os.path.expanduser(config.get('ConfigDir'))
         os.environ['JUPYTER_DATA_DIR'] = os.path.expanduser(config.get('DataDir'))
 
@@ -73,4 +78,5 @@ class PyneappleLocalServer(object):
         app.token = self.token
 
         app.initialize()
+        app.contents_manager.allow_hidden = True
         app.start()
