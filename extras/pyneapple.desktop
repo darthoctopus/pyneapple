@@ -1,11 +1,11 @@
 [Desktop Entry]
 Name=pyneapple
 Comment=Interactive literate coding notebook in GTK
-Exec=pyneapple %U
+Exec=/home/joel/.local/bin/pyneapple %U
 Terminal=false
 Type=Application
 Icon=pyneapple
-MimeType=application/x-ipynb+json;
+MimeType=application/x-ipynb+json;x-scheme-handler/pyneapple;
 StartupNotify=true
 StartupWMClass=pyneapple
-MimeType=x-scheme-handler/pyneapple;
+

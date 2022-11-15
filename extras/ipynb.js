@@ -24,97 +24,46 @@
  *
  */
 
-const GtkClutter = imports.gi.GtkClutter;
-const Gtk = imports.gi.Gtk;
-const GLib = imports.gi.GLib;
-const Lang = imports.lang;
-const Sushi = imports.gi.Sushi;
-const WebKit = imports.gi.WebKit2;
+const {GLib, GObject, Gio} = imports.gi;
 
-const MimeHandler = imports.ui.mimeHandler;
-const Utils = imports.ui.utils;
-
-const Gio = imports.gi.Gio;
-
+const Renderer = imports.ui.renderer;
+const HTML = imports.viewers.html
 const tmpdir="/tmp/sushipython"
+const jupyter = "/home/joel/.local/bin/jupyter"
 
-GLib.spawn_command_line_sync("/usr/bin/mkdir -p " + tmpdir);
-GLib.spawn_command_line_sync("/usr/bin/touch " + tmpdir + "/custom.css");
-
-const JupyterRenderer = new Lang.Class({
-    Name: 'JupyterRenderer',
-
-    _init : function(args) {
-        this.moveOnClick = false;
-        this.canFullScreen = true;
+var Klass = GObject.registerClass({
+    Implements: [Renderer.Renderer],
+    Properties: {
+        fullscreen: GObject.ParamSpec.boolean('fullscreen', '', '',
+                                              GObject.ParamFlags.READABLE,
+                                              false),
+        ready: GObject.ParamSpec.boolean('ready', '', '',
+                                         GObject.ParamFlags.READABLE,
+                                         false)
     },
+}, class JupyterRenderer extends HTML.Klass {
+    get ready() {
+        return !!this._ready;
+    }
 
-    prepare : function(file, mainWindow, callback) {
-        this._mainWindow = mainWindow;
-        this._file = file;
-        this._callback = callback;
+    get fullscreen() {
+        return !!this._fullscreen;
+    }
 
-        this._webView = new WebKit.WebView();
-        this._webView.show_all();
+    _init(file) {
+        GLib.spawn_command_line_sync("/usr/bin/mkdir -p " + tmpdir);
+        GLib.spawn_command_line_sync("/usr/bin/touch " + tmpdir + "/custom.css");
 
-        /* disable the default context menu of the web view */
-        this._webView.connect ("context-menu",
-                               function() {return true;});
-	
-	/* Prepare HTML version of ipynb — requires nbconvert */
-
-	this._path = file.get_path();
-	this._hashstr = this._path + file.query_info(Gio.FILE_ATTRIBUTE_TIME_MODIFIED,0,null).get_attribute_uint64(Gio.FILE_ATTRIBUTE_TIME_MODIFIED);
-	this._hash = GLib.compute_checksum_for_string (GLib.ChecksumType.SHA512, this._hashstr, this._hashstr.length);	
-	this._newname = tmpdir + "/" + this._hash + ".html"
-	
-	/* Gio file for new html file */
-	this._file2 = Gio.file_new_for_path(this._newname);
-	if (!(this._file2.query_exists(null))) GLib.spawn_command_line_sync("/usr/bin/jupyter nbconvert \"" + this._path + "\" --output=\"" + this._newname + "\"");
-	
-        this._webView.load_uri(this._file2.get_uri());
-
-        this._actor = new GtkClutter.Actor({ contents: this._webView });
-        this._actor.set_reactive(true);
-
-        this._callback();
-    },
-
-    render : function() {
-        return this._actor;
-    },
-
-    getSizeForAllocation : function(allocation) {
-        return allocation;
-    },
-
-    createToolbar : function() {
-        this._mainToolbar = new Gtk.Toolbar({ icon_size: Gtk.IconSize.MENU });
-        this._mainToolbar.get_style_context().add_class('osd');
-        this._mainToolbar.set_show_arrow(false);
-        this._mainToolbar.show();
-
-        this._toolbarActor = new GtkClutter.Actor({ contents: this._mainToolbar });
-
-        this._toolbarZoom = Utils.createFullScreenButton(this._mainWindow);
-        this._mainToolbar.insert(this._toolbarZoom, 0);
-
-        let separator = new Gtk.SeparatorToolItem();
-        separator.show();
-        this._mainToolbar.insert(separator, 1);
-
-        this._toolbarRun = Utils.createOpenButton(this._file, this._mainWindow);
-        this._mainToolbar.insert(this._toolbarRun, 2);
-
-        return this._toolbarActor;
+        let _path = file.get_path();
+        let _hashstr = _path + file.query_info(Gio.FILE_ATTRIBUTE_TIME_MODIFIED,0,null).get_attribute_uint64(Gio.FILE_ATTRIBUTE_TIME_MODIFIED);
+        let _hash = GLib.compute_checksum_for_string (GLib.ChecksumType.SHA512, _hashstr, _hashstr.length);  
+        let _newname = tmpdir + "/" + _hash + ".html"
+        let _file2 = Gio.file_new_for_path(_newname);
+        if (!(_file2.query_exists(null))) GLib.spawn_command_line_sync(jupyter + " nbconvert \"" + _path + "\" --to html --output \"" + _newname + "\"");
+        super._init(_file2);
     }
 });
 
-let handler = new MimeHandler.MimeHandler();
-let renderer = new JupyterRenderer();
-
-let mimeTypes = [
+var mimeTypes = [
     'application/x-ipynb+json'
 ];
-
-handler.registerMimeTypes(mimeTypes, renderer);
