@@ -262,7 +262,6 @@ class JupyterWindow:
         e.g. accidentally navigating with a hyperlink)
         """
 
-
         self.load_uri("http://{}:{}/notebooks{}?token={}".
                       format(self.server.servername, self.server.port, platformat(self.file), self.server.token))
 
