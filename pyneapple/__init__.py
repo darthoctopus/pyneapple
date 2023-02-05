@@ -86,7 +86,7 @@ class Pyneapple(Gtk.Application):
         # hack — give some time for the server to start before
         # opening the first webview. Otherwise we get
         # a refused connection (and confused users?)
-        time.sleep(config.get('StartupDelay'))
+        time.sleep(config.getint('StartupDelay'))
 
         # Unfortunately, we now have one instance of
         # Builder and get_object per instance of ApplicationWindow
