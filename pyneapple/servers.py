@@ -83,12 +83,12 @@ class PyneappleLocalServer(object):
             app.open_browser = False
             app.token = self.token
             app.initialize()
-            app.contents_manager.allow_hidden = True
         except AttributeError:
             app = NotebookApp.initialize_server()
             app.open_browser = False
             app.identity_provider.token = self.token
-            app.contents_manager.allow_hidden = True
-            app.contents_manager.root_dir = '/'
-            app.port = self.port
+        app.contents_manager.allow_hidden = True
+        app.contents_manager.root_dir = '/'
+        app.port = self.port
+        app.use_redirect_file = False
         app.start()
