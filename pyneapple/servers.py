@@ -22,7 +22,7 @@ import time
 import hashlib
 import shutil
 
-from notebook.notebookapp import NotebookApp
+from nbclassic.notebookapp import NotebookApp
 
 from .config import config
 
@@ -74,9 +74,10 @@ class PyneappleLocalServer(object):
             print("Temp directory Exists")
 
         app = NotebookApp()
-        app.open_browser = False
-        app.token = self.token
+        app.serverapp.open_browser = False
+        app.serverapp.token = self.token
 
+        app.serverapp.initialize()
         app.initialize()
-        app.contents_manager.allow_hidden = True
+        app.serverapp.contents_manager.allow_hidden = True
         app.start()
