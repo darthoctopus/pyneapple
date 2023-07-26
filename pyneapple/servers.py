@@ -73,6 +73,7 @@ class PyneappleLocalServer(object):
         except Exception:
             print("Temp directory Exists")
 
+        NotebookApp.show_banner = False
         app = NotebookApp()
         app.serverapp.open_browser = False
         app.serverapp.token = self.token

@@ -263,7 +263,7 @@ class JupyterWindow:
         """
 
 
-        self.load_uri("http://{}:{}/notebooks{}?token={}".
+        self.load_uri("http://{}:{}/nbclassic/notebooks{}?token={}".
                       format(self.server.servername, self.server.port, platformat(self.file), self.server.token))
 
     def save_as(self, *_):
