@@ -10,7 +10,7 @@ div#notebook-container {
 }
 div#notebook {
   padding: 0;
-  font-size: 16px;
+  font-size: 14pt;
 }
 div#notebook-container {
   background: transparent;
@@ -342,10 +342,18 @@ div.unittest div.unittest-separator {
   background-color: #f2df0d;
   margin-top: 10px;
 }
+
+div.rendered_html {
+  font-family: "CMU Serif";
+  text-align: justify !important;
+}
 div.rendered_html h1 {
-  font-family: "RobotoSlab";
+  font-family: "Arno Pro", "Century";
 }
 div.rendered_html h2 {
+  font-family: "Arno Pro", "Century";
+}
+div.rendered_html h3 {
   font-family: "RobotoSlab";
 }
 div.output_subarea.output_text.output_stream.output_stdout,
