@@ -22,12 +22,7 @@ import time
 import hashlib
 import shutil
 
-try:
-    from notebook.notebookapp import NotebookApp
-except ImportError:
-    # notebook v7 and above
-    from nbclassic.notebookapp import NotebookApp
-    #from notebook.app import JupyterNotebookApp as NotebookApp
+from nbclassic.notebookapp import NotebookApp
 
 from .config import config
 
@@ -78,17 +73,12 @@ class PyneappleLocalServer(object):
         except Exception:
             print("Temp directory Exists")
 
-        try:
-            app = NotebookApp()
-            app.open_browser = False
-            app.token = self.token
-            app.initialize()
-        except AttributeError:
-            app = NotebookApp.initialize_server()
-            app.open_browser = False
-            app.identity_provider.token = self.token
-        app.contents_manager.allow_hidden = True
-        app.contents_manager.root_dir = '/'
-        app.port = self.port
-        app.use_redirect_file = False
+        NotebookApp.show_banner = False
+        app = NotebookApp()
+        app.serverapp.open_browser = False
+        app.serverapp.token = self.token
+
+        app.serverapp.initialize()
+        app.initialize()
+        app.serverapp.contents_manager.allow_hidden = True
         app.start()
